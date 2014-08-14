@@ -139,10 +139,45 @@ module.exports = require('./vega-client').VegaClient;
     function VegaObservatory(options) {
       this.options = options;
       this.vegaClient = new VegaClient(this.options.url, this.options.roomId, this.options.badge);
+      this.callbacks = {};
+      this.peerStore = {};
+      this._setClientCallbacks();
     }
 
     VegaObservatory.prototype.call = function() {
       return this.vegaClient.call();
+    };
+
+    VegaObservatory.prototype.on = function(event, callback) {
+      var _base;
+      (_base = this.callbacks)[event] || (_base[event] = []);
+      return this.callbacks[event].push(callback);
+    };
+
+    VegaObservatory.prototype.trigger = function(event) {
+      var args, callbacks;
+      args = Array.prototype.slice.call(arguments, 1);
+      if (callbacks = this.callbacks[event]) {
+        return callbacks.forEach(function(callback) {
+          return callback.apply(this, args);
+        });
+      }
+    };
+
+    VegaObservatory.prototype._setClientCallbacks = function() {
+      return this.vegaClient.on('callAccepted', (function(_this) {
+        return function(peers) {
+          peers.forEach(function(peer) {
+            var peerConnection;
+            peerConnection = new WebRTCPeerConnection;
+            return _this.peerStore[peer.peerId] = {
+              badge: peer.badge,
+              peerConnection: peerConnection
+            };
+          });
+          return _this.trigger('callAccepted', peers);
+        };
+      })(this));
     };
 
     return VegaObservatory;
