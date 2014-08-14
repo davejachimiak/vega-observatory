@@ -41,24 +41,35 @@ describe 'VegaObservatory', ->
       it 'triggers a callAccepted event on the observatory', ->
         object = {}
 
-        @vegaObservatory.on 'callAccepted', (peers) ->
-          object.peers = peers
+        @vegaObservatory.on 'callAccepted', (payload) ->
+          object.peers = payload
 
         @vegaClient.trigger('callAccepted', @peers)
 
         expect(object.peers).to.eq @peers
 
     describe 'on offer', ->
-      it 'saves a reference to the peer', ->
-        badge = { name: 'Dave' }
-        payload =
+      beforeEach ->
+        @badge = { name: 'Dave' }
+        @payload =
           peerId: 'peerId'
-          badge: badge
+          badge: @badge
           offer: { 'offer key': 'offer value' }
 
-        @vegaClient.trigger 'offer', payload
+      it 'saves a reference to the peer', ->
+        @vegaClient.trigger 'offer', @payload
 
         expect(@vegaObservatory.peerStore).to.eql
           "peerId":
-            badge: badge
+            badge: @badge
             peerConnection: @peerConnection
+
+      it 'triggers an offer event', ->
+        object = {}
+
+        @vegaObservatory.on 'offer', (payload) ->
+          object.payload = payload
+
+        @vegaClient.trigger('offer', @payload)
+
+        expect(object.payload).to.eq @payload

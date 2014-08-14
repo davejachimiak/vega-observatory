@@ -139,6 +139,7 @@ module.exports = require('./vega-client').VegaClient;
   VegaObservatory = (function() {
     function VegaObservatory(options) {
       this.options = options;
+      this._handleOffer = __bind(this._handleOffer, this);
       this._handleCallAccepted = __bind(this._handleCallAccepted, this);
       this.vegaClient = new VegaClient(this.options.url, this.options.roomId, this.options.badge);
       this.callbacks = {};
@@ -174,7 +175,7 @@ module.exports = require('./vega-client').VegaClient;
       })(this));
       return this.vegaClient.on('offer', (function(_this) {
         return function(payload) {
-          return _this._addPeerToStore(payload);
+          return _this._handleOffer(payload);
         };
       })(this));
     };
@@ -186,6 +187,11 @@ module.exports = require('./vega-client').VegaClient;
         };
       })(this));
       return this.trigger('callAccepted', peers);
+    };
+
+    VegaObservatory.prototype._handleOffer = function(payload) {
+      this._addPeerToStore(payload);
+      return this.trigger('offer', payload);
     };
 
     VegaObservatory.prototype._addPeerToStore = function(peer) {

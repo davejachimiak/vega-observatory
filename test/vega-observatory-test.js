@@ -56,33 +56,43 @@
         return it('triggers a callAccepted event on the observatory', function() {
           var object;
           object = {};
-          this.vegaObservatory.on('callAccepted', function(peers) {
-            return object.peers = peers;
+          this.vegaObservatory.on('callAccepted', function(payload) {
+            return object.peers = payload;
           });
           this.vegaClient.trigger('callAccepted', this.peers);
           return expect(object.peers).to.eq(this.peers);
         });
       });
       return describe('on offer', function() {
-        return it('saves a reference to the peer', function() {
-          var badge, payload;
-          badge = {
+        beforeEach(function() {
+          this.badge = {
             name: 'Dave'
           };
-          payload = {
+          return this.payload = {
             peerId: 'peerId',
-            badge: badge,
+            badge: this.badge,
             offer: {
               'offer key': 'offer value'
             }
           };
-          this.vegaClient.trigger('offer', payload);
+        });
+        it('saves a reference to the peer', function() {
+          this.vegaClient.trigger('offer', this.payload);
           return expect(this.vegaObservatory.peerStore).to.eql({
             "peerId": {
-              badge: badge,
+              badge: this.badge,
               peerConnection: this.peerConnection
             }
           });
+        });
+        return it('triggers an offer event', function() {
+          var object;
+          object = {};
+          this.vegaObservatory.on('offer', function(payload) {
+            return object.payload = payload;
+          });
+          this.vegaClient.trigger('offer', this.payload);
+          return expect(object.payload).to.eq(this.payload);
         });
       });
     });
