@@ -69,12 +69,8 @@
     VegaObservatory.prototype._addPeerToStore = function(peer) {
       return this.peerStore[peer.peerId] = {
         badge: peer.badge,
-        peerConnection: this._peerConnection()
+        peerConnection: this.peerConnectionFactory.create()
       };
-    };
-
-    VegaObservatory.prototype._peerConnection = function() {
-      return this.peerConnectionFactory.create();
     };
 
     return VegaObservatory;

@@ -44,9 +44,6 @@ class VegaObservatory
   _addPeerToStore: (peer) ->
     @peerStore[peer.peerId] =
       badge: peer.badge
-      peerConnection: @_peerConnection()
-
-  _peerConnection: ->
-    @peerConnectionFactory.create()
+      peerConnection: @peerConnectionFactory.create()
 
 module.exports = VegaObservatory
