@@ -1,11 +1,10 @@
-VegaClient = require('vega-client')
-
-peerConnectionFactory = require('./private/peer-connection-factory')
+VegaClient            = require('vega-client')
+PeerConnectionFactory = require('./private/peer-connection-factory')
 
 class VegaObservatory
   constructor: (@options) ->
     @vegaClient = new VegaClient(@options.url, @options.roomId, @options.badge)
-    @peerConnectionFactory = peerConnectionFactory
+    @peerConnectionFactory = PeerConnectionFactory
     @callbacks = {}
     @peerStore = {}
     @_setClientCallbacks()
