@@ -1,8 +1,11 @@
 VegaClient = require('vega-client')
 
+peerConnectionFactory = require('./private/peer-connection-factory')
+
 class VegaObservatory
   constructor: (@options) ->
     @vegaClient = new VegaClient(@options.url, @options.roomId, @options.badge)
+    @peerConnectionFactory = peerConnectionFactory
     @callbacks = {}
     @peerStore = {}
     @_setClientCallbacks()
@@ -29,7 +32,9 @@ class VegaObservatory
       @_handleOffer(payload)
 
   _handleCallAccepted: (peers) =>
-    peers.forEach (peer) => @_addPeerToStore(peer)
+    peers.forEach (peer) =>
+      @_addPeerToStore(peer)
+
     @trigger 'callAccepted', peers
 
   _handleOffer: (payload) =>
@@ -37,10 +42,11 @@ class VegaObservatory
     @trigger 'offer', payload
 
   _addPeerToStore: (peer) ->
-    peerConnection = new WebRTCPeerConnection
-
     @peerStore[peer.peerId] =
       badge: peer.badge
-      peerConnection: peerConnection
+      peerConnection: @_peerConnection()
+
+  _peerConnection: ->
+    @peerConnectionFactory.create()
 
 module.exports = VegaObservatory

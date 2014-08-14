@@ -1,12 +1,15 @@
 describe 'VegaObservatory', ->
   beforeEach ->
-    window.WebRTCPeerConnection = ->
     options =
       url: 'ws://0.0.0.0:3000'
       roomId: '/abc123'
       badge: {}
     @vegaObservatory = new VegaObservatory options
+    @peerConnectionFactory = @vegaObservatory.peerConnectionFactory
     @vegaClient = @vegaObservatory.vegaClient
+
+  afterEach ->
+    sinon.collection.restore()
 
   describe '#call', ->
     it 'delegates to the vega client', ->
@@ -18,8 +21,8 @@ describe 'VegaObservatory', ->
 
   describe 'callbacks', ->
     beforeEach ->
-      sinon.collection.stub(window, 'WebRTCPeerConnection').
-        returns @peerConnection = {}
+      sinon.collection.stub(@peerConnectionFactory, 'create').
+        returns @peerConnection = 'a peer connection!'
 
     describe 'on callAccepted', ->
       beforeEach ->

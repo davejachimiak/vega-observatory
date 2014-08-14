@@ -3,14 +3,17 @@
   describe('VegaObservatory', function() {
     beforeEach(function() {
       var options;
-      window.WebRTCPeerConnection = function() {};
       options = {
         url: 'ws://0.0.0.0:3000',
         roomId: '/abc123',
         badge: {}
       };
       this.vegaObservatory = new VegaObservatory(options);
+      this.peerConnectionFactory = this.vegaObservatory.peerConnectionFactory;
       return this.vegaClient = this.vegaObservatory.vegaClient;
+    });
+    afterEach(function() {
+      return sinon.collection.restore();
     });
     describe('#call', function() {
       return it('delegates to the vega client', function() {
@@ -22,7 +25,7 @@
     });
     return describe('callbacks', function() {
       beforeEach(function() {
-        return sinon.collection.stub(window, 'WebRTCPeerConnection').returns(this.peerConnection = {});
+        return sinon.collection.stub(this.peerConnectionFactory, 'create').returns(this.peerConnection = 'a peer connection!');
       });
       describe('on callAccepted', function() {
         beforeEach(function() {
