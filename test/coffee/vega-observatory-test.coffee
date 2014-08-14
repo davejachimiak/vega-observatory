@@ -1,7 +1,11 @@
 describe 'VegaObserver', ->
   beforeEach ->
-    @vegaObservatory = new VegaObservatory
-    @vegaClient   = @vegaObserver.vegaClient
+    options =
+      url: 'ws://0.0.0.0:3000'
+      roomId: '/abc123'
+      badge: {}
+    @vegaObservatory = new VegaObservatory options
+    @vegaClient = @vegaObservatory.vegaClient
 
   describe '#call', ->
     it 'delegates to the vega client', ->

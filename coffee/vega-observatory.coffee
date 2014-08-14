@@ -1,7 +1,10 @@
 VegaClient = require('vega-client')
 
 class VegaObservatory
-  constructor: ->
-    @vegaClient = new VegaClient
+  constructor: (@options) ->
+    @vegaClient = new VegaClient(@options.url, @options.roomId, @options.badge)
+
+  call: ->
+    @vegaClient.call()
 
 module.exports = VegaObservatory

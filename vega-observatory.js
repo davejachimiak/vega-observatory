@@ -5,9 +5,14 @@
   VegaClient = require('vega-client');
 
   VegaObservatory = (function() {
-    function VegaObservatory() {
-      this.vegaClient = new VegaClient;
+    function VegaObservatory(options) {
+      this.options = options;
+      this.vegaClient = new VegaClient(this.options.url, this.options.roomId, this.options.badge);
     }
+
+    VegaObservatory.prototype.call = function() {
+      return this.vegaClient.call();
+    };
 
     return VegaObservatory;
 

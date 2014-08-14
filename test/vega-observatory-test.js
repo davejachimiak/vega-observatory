@@ -2,8 +2,14 @@
 (function() {
   describe('VegaObserver', function() {
     beforeEach(function() {
-      this.vegaObservatory = new VegaObservatory;
-      return this.vegaClient = this.vegaObserver.vegaClient;
+      var options;
+      options = {
+        url: 'ws://0.0.0.0:3000',
+        roomId: '/abc123',
+        badge: {}
+      };
+      this.vegaObservatory = new VegaObservatory(options);
+      return this.vegaClient = this.vegaObservatory.vegaClient;
     });
     return describe('#call', function() {
       return it('delegates to the vega client', function() {
