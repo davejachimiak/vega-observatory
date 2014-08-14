@@ -43,12 +43,7 @@
       })(this));
       return this.vegaClient.on('offer', (function(_this) {
         return function(payload) {
-          var peerConnection;
-          peerConnection = new WebRTCPeerConnection;
-          return _this.peerStore[payload.peerId] = {
-            badge: payload.badge,
-            peerConnection: peerConnection
-          };
+          return _this._addPeerToStore(payload);
         };
       })(this));
     };
@@ -56,15 +51,19 @@
     VegaObservatory.prototype._handleCallAccepted = function(peers) {
       peers.forEach((function(_this) {
         return function(peer) {
-          var peerConnection;
-          peerConnection = new WebRTCPeerConnection;
-          return _this.peerStore[peer.peerId] = {
-            badge: peer.badge,
-            peerConnection: peerConnection
-          };
+          return _this._addPeerToStore(peer);
         };
       })(this));
       return this.trigger('callAccepted', peers);
+    };
+
+    VegaObservatory.prototype._addPeerToStore = function(peer) {
+      var peerConnection;
+      peerConnection = new WebRTCPeerConnection;
+      return this.peerStore[peer.peerId] = {
+        badge: peer.badge,
+        peerConnection: peerConnection
+      };
     };
 
     return VegaObservatory;
