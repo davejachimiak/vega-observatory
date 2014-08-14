@@ -17,7 +17,7 @@
     "uglify-js":"2.4.13"
   },
   "scripts": {
-    "build":"coffee -o . -c coffee/vega-observatory.coffee && browserify index.js -o vega-observatory.bundle.js && uglifyjs vega-observatory.bundle.js -o vega-observatory.bundle.min.js",
+    "build":"coffee -o . -c coffee/vega-observatory.coffee && browserify bundle.js -o vega-observatory.bundle.js && uglifyjs vega-observatory.bundle.js -o vega-observatory.bundle.min.js",
     "build-test":"coffee -o ./test -c test/coffee/vega-observatory-test.coffee",
     "test":"npm run build && npm run build-test && mocha-phantomjs test/test.html"
   }

@@ -1,5 +1,7 @@
 VegaClient = require('vega-client')
 
-class global.VegaObservatory
+class VegaObservatory
   constructor: ->
     @vegaClient = new VegaClient
+
+module.exports = VegaObservatory
