@@ -21,7 +21,10 @@
       });
     });
     return describe('callbacks', function() {
-      return describe('on callAccepted', function() {
+      beforeEach(function() {
+        return sinon.collection.stub(window, 'WebRTCPeerConnection').returns(this.peerConnection = {});
+      });
+      describe('on callAccepted', function() {
         beforeEach(function() {
           this.peer1 = {
             peerId: 'peerId1',
@@ -35,8 +38,7 @@
               name: 'Allie'
             }
           };
-          this.peers = [this.peer1, this.peer2];
-          return sinon.collection.stub(window, 'WebRTCPeerConnection').returns(this.peerConnection = {});
+          return this.peers = [this.peer1, this.peer2];
         });
         it('saves references to all peers in the response', function() {
           this.vegaClient.trigger('callAccepted', this.peers);
@@ -59,6 +61,28 @@
           });
           this.vegaClient.trigger('callAccepted', this.peers);
           return expect(object.peers).to.eq(this.peers);
+        });
+      });
+      return describe('on offer', function() {
+        return it('saves a reference to the peer', function() {
+          var badge, payload;
+          badge = {
+            name: 'Dave'
+          };
+          payload = {
+            peerId: 'peerId',
+            badge: badge,
+            offer: {
+              'offer key': 'offer value'
+            }
+          };
+          this.vegaClient.trigger('offer', payload);
+          return expect(this.vegaObservatory.peerStore).to.eql({
+            "peerId": {
+              badge: badge,
+              peerConnection: this.peerConnection
+            }
+          });
         });
       });
     });

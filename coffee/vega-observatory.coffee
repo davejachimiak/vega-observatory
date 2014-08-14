@@ -22,14 +22,23 @@ class VegaObservatory
         callback.apply(this, args)
 
   _setClientCallbacks: ->
-    @vegaClient.on 'callAccepted', (peers) =>
-      peers.forEach (peer) =>
-        peerConnection = new WebRTCPeerConnection
+    @vegaClient.on 'callAccepted', (payload) => @_handleCallAccepted(payload)
 
-        @peerStore[peer.peerId] =
-          badge: peer.badge
-          peerConnection: peerConnection
+    @vegaClient.on 'offer', (payload) =>
+      peerConnection = new WebRTCPeerConnection
 
-      @trigger 'callAccepted', peers
+      @peerStore[payload.peerId] =
+        badge: payload.badge
+        peerConnection: peerConnection
+
+  _handleCallAccepted: (peers) =>
+    peers.forEach (peer) =>
+      peerConnection = new WebRTCPeerConnection
+
+      @peerStore[peer.peerId] =
+        badge: peer.badge
+        peerConnection: peerConnection
+
+    @trigger 'callAccepted', peers
 
 module.exports = VegaObservatory
