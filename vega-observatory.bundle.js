@@ -202,11 +202,19 @@ module.exports = require('./vega-client').VegaClient;
           return _this._setDescription(peerConnection, 'offer', payload);
         };
       })(this));
-      return this.vegaClient.on('answer', (function(_this) {
+      this.vegaClient.on('answer', (function(_this) {
         return function(payload) {
           var peerConnection;
           peerConnection = _this.peerStore[payload.peerId].peerConnection;
           return _this._setDescription(peerConnection, 'answer', payload);
+        };
+      })(this));
+      return this.vegaClient.on('candidate', (function(_this) {
+        return function(payload) {
+          var iceCandidate, peerConnection;
+          peerConnection = _this.peerStore[payload.peerId].peerConnection;
+          iceCandidate = new RTCIceCandidate(payload.candidate);
+          return peerConnection.addIceCandidate(iceCandidate);
         };
       })(this));
     };

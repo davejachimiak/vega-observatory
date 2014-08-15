@@ -1,6 +1,7 @@
 describe 'VegaObservatory', ->
   beforeEach ->
     class window.RTCSessionDescription
+    class window.RTCIceCandidate
 
     options =
       url: 'ws://0.0.0.0:3000'
@@ -91,6 +92,7 @@ describe 'VegaObservatory', ->
 
     describe 'on answer', ->
       beforeEach ->
+        @peerId = 'peerId'
         @peerConnection = setRemoteDescription: ->
         @badge = { name: 'Dave' }
         @vegaObservatory.peerStore =
@@ -100,7 +102,7 @@ describe 'VegaObservatory', ->
 
         @payload =
           answer: { an: 'answer' }
-          peerId: 'peerId'
+          peerId: @peerId
 
         @setRemoteDescription =
           sinon.collection.stub @peerConnection, 'setRemoteDescription'
@@ -121,3 +123,27 @@ describe 'VegaObservatory', ->
         @vegaClient.trigger('answer', @payload)
 
         expect(object.payload).to.eq @payload
+
+    describe 'on candidate', ->
+      beforeEach ->
+        @peerConnection = addIceCandidate: ->
+        @badge = { name: 'Dave' }
+        @peerId = 'peerId'
+        @vegaObservatory.peerStore =
+          'peerId':
+            badge: @badge
+            peerConnection: @peerConnection
+
+        @payload =
+          candidate: { an: 'candidate' }
+          peerId: @peerId
+
+        @addIceCandidate =
+          sinon.collection.stub @peerConnection, 'addIceCandidate'
+
+        @rtcIceCandidate = sinon.createStubInstance(window.RTCIceCandidate)
+
+      it 'adds the ice candidate to the proper peer connection', ->
+        @vegaClient.trigger 'candidate', @payload
+
+        expect(@addIceCandidate).to.have.been.calledWith @rtcIceCandidate

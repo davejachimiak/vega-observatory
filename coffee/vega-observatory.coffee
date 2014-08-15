@@ -35,6 +35,12 @@ class VegaObservatory
       peerConnection = @peerStore[payload.peerId].peerConnection
       @_setDescription(peerConnection, 'answer', payload)
 
+    @vegaClient.on 'candidate', (payload) =>
+      peerConnection = @peerStore[payload.peerId].peerConnection
+      iceCandidate   = new RTCIceCandidate(payload.candidate)
+
+      peerConnection.addIceCandidate(iceCandidate)
+
   _handleCallAccepted: (peers) =>
     peers.forEach (peer) =>
       @_addPeerToStore(peer)

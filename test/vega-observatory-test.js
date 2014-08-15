@@ -9,6 +9,12 @@
         return RTCSessionDescription;
 
       })();
+      window.RTCIceCandidate = (function() {
+        function RTCIceCandidate() {}
+
+        return RTCIceCandidate;
+
+      })();
       options = {
         url: 'ws://0.0.0.0:3000',
         roomId: '/abc123',
@@ -112,8 +118,9 @@
           return expect(object.payload).to.eq(this.payload);
         });
       });
-      return describe('on answer', function() {
+      describe('on answer', function() {
         beforeEach(function() {
+          this.peerId = 'peerId';
           this.peerConnection = {
             setRemoteDescription: function() {}
           };
@@ -130,7 +137,7 @@
             answer: {
               an: 'answer'
             },
-            peerId: 'peerId'
+            peerId: this.peerId
           };
           this.setRemoteDescription = sinon.collection.stub(this.peerConnection, 'setRemoteDescription');
           return this.rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription);
@@ -147,6 +154,35 @@
           });
           this.vegaClient.trigger('answer', this.payload);
           return expect(object.payload).to.eq(this.payload);
+        });
+      });
+      return describe('on candidate', function() {
+        beforeEach(function() {
+          this.peerConnection = {
+            addIceCandidate: function() {}
+          };
+          this.badge = {
+            name: 'Dave'
+          };
+          this.peerId = 'peerId';
+          this.vegaObservatory.peerStore = {
+            'peerId': {
+              badge: this.badge,
+              peerConnection: this.peerConnection
+            }
+          };
+          this.payload = {
+            candidate: {
+              an: 'candidate'
+            },
+            peerId: this.peerId
+          };
+          this.addIceCandidate = sinon.collection.stub(this.peerConnection, 'addIceCandidate');
+          return this.rtcIceCandidate = sinon.createStubInstance(window.RTCIceCandidate);
+        });
+        return it('adds the ice candidate to the proper peer connection', function() {
+          this.vegaClient.trigger('candidate', this.payload);
+          return expect(this.addIceCandidate).to.have.been.calledWith(this.rtcIceCandidate);
         });
       });
     });
