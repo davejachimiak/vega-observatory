@@ -1,6 +1,13 @@
 class PeerConnectionUtil
   @createPeerConnection: (observatory, peerId, config, pcConstructor=RTCPeerConnection) ->
-    new pcConstructor(config)
+    vegaClient    = observatory.vegaClient
+    peerCandidate = new pcConstructor(config)
+
+    peerCandidate.onicecandidate = (event) ->
+      if candidate = event.candidate
+        vegaClient.candidate(candidate, peerId)
+
+    peerCandidate
 
   @descriptionCallbacks: ->
 

@@ -6,10 +6,19 @@
     function PeerConnectionUtil() {}
 
     PeerConnectionUtil.createPeerConnection = function(observatory, peerId, config, pcConstructor) {
+      var peerCandidate, vegaClient;
       if (pcConstructor == null) {
         pcConstructor = RTCPeerConnection;
       }
-      return new pcConstructor(config);
+      vegaClient = observatory.vegaClient;
+      peerCandidate = new pcConstructor(config);
+      peerCandidate.onicecandidate = function(event) {
+        var candidate;
+        if (candidate = event.candidate) {
+          return vegaClient.candidate(candidate, peerId);
+        }
+      };
+      return peerCandidate;
     };
 
     PeerConnectionUtil.descriptionCallbacks = function() {};
