@@ -136,7 +136,12 @@ module.exports = require('./vega-client').VegaClient;
   PeerConnectionUtil = (function() {
     function PeerConnectionUtil() {}
 
-    PeerConnectionUtil.createPeerConnection = function() {};
+    PeerConnectionUtil.createPeerConnection = function(observatory, peerId, pcConstructor) {
+      if (pcConstructor == null) {
+        pcConstructor = RTCPeerConnection;
+      }
+      return new pcConstructor;
+    };
 
     PeerConnectionUtil.descriptionCallbacks = function() {};
 

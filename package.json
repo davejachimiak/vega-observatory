@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build":"coffee -o . -c coffee && browserify bundle.js -o vega-observatory.bundle.js && uglifyjs vega-observatory.bundle.js -o vega-observatory.bundle.min.js",
-    "build-test":"coffee -o ./test -c test/coffee/vega-observatory-test.coffee",
-    "test":"npm run build && npm run build-test && mocha-phantomjs test/test.html"
+    "build-test":"coffee -o ./test -c test/coffee",
+    "test":"npm run build && npm run build-test && mocha-phantomjs test/test.html && mocha test/private"
   }
 }
