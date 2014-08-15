@@ -27,6 +27,13 @@
       return peerConnection.createOffer(successCallback, errorCallback);
     };
 
+    VegaObservatory.prototype.createAnswer = function(peerId) {
+      var errorCallback, peerConnection, successCallback, _ref;
+      peerConnection = this.peerStore[peerId].peerConnection;
+      _ref = this.peerConnectionUtil.descriptionCallbacks(this.vegaClient, peerId, peerConnection, 'answer'), successCallback = _ref[0], errorCallback = _ref[1];
+      return peerConnection.createAnswer(successCallback, errorCallback);
+    };
+
     VegaObservatory.prototype._setClientCallbacks = function() {
       this.vegaClient.on('callAccepted', (function(_this) {
         return function(payload) {

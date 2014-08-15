@@ -20,6 +20,14 @@ class VegaObservatory
 
     peerConnection.createOffer(successCallback, errorCallback)
 
+  createAnswer: (peerId) ->
+    peerConnection = @peerStore[peerId].peerConnection
+
+    [successCallback, errorCallback] =
+      @peerConnectionUtil.descriptionCallbacks(@vegaClient, peerId, peerConnection, 'answer')
+
+    peerConnection.createAnswer(successCallback, errorCallback)
+
   _setClientCallbacks: ->
     @vegaClient.on 'callAccepted', (payload) =>
       @_handleCallAccepted(payload)

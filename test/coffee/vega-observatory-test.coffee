@@ -41,6 +41,25 @@ describe 'VegaObservatory', ->
 
       expect(createOffer).to.have.been.calledWith successCallback, errorCallback
 
+  describe '#createAnswer', ->
+    it 'creates an answer on the peer connection with success and failure callbacks', ->
+      @peerConnection = createAnswer: ->
+      @peerId = 'peerId'
+      @vegaObservatory.peerStore =
+        'peerId':
+          badge: { name: 'Dave' }
+          peerConnection: @peerConnection
+      successCallback = sinon.collection.mock()
+      errorCallback = sinon.collection.mock()
+      createAnswer = sinon.collection.stub @peerConnection, 'createAnswer'
+      sinon.collection.stub(@peerConnectionUtil, 'descriptionCallbacks').
+        withArgs(@vegaClient, @peerId, @peerConnection, 'answer').
+        returns [successCallback, errorCallback]
+
+      @vegaObservatory.createAnswer(@peerId)
+
+      expect(createAnswer).to.have.been.calledWith successCallback, errorCallback
+
   describe 'vega client callbacks', ->
     beforeEach ->
       sinon.collection.stub(@peerConnectionUtil, 'createPeerConnection').

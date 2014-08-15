@@ -58,6 +58,29 @@
         return expect(createOffer).to.have.been.calledWith(successCallback, errorCallback);
       });
     });
+    describe('#createAnswer', function() {
+      return it('creates an answer on the peer connection with success and failure callbacks', function() {
+        var createAnswer, errorCallback, successCallback;
+        this.peerConnection = {
+          createAnswer: function() {}
+        };
+        this.peerId = 'peerId';
+        this.vegaObservatory.peerStore = {
+          'peerId': {
+            badge: {
+              name: 'Dave'
+            },
+            peerConnection: this.peerConnection
+          }
+        };
+        successCallback = sinon.collection.mock();
+        errorCallback = sinon.collection.mock();
+        createAnswer = sinon.collection.stub(this.peerConnection, 'createAnswer');
+        sinon.collection.stub(this.peerConnectionUtil, 'descriptionCallbacks').withArgs(this.vegaClient, this.peerId, this.peerConnection, 'answer').returns([successCallback, errorCallback]);
+        this.vegaObservatory.createAnswer(this.peerId);
+        return expect(createAnswer).to.have.been.calledWith(successCallback, errorCallback);
+      });
+    });
     return describe('vega client callbacks', function() {
       beforeEach(function() {
         return sinon.collection.stub(this.peerConnectionUtil, 'createPeerConnection').returns(this.peerConnection = {
