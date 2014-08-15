@@ -36,17 +36,20 @@ class VegaObservatory
       @_handleSessionDescription(peerConnection, 'answer', payload)
 
     @vegaClient.on 'candidate', (payload) =>
-      peerConnection = @peerStore[payload.peerId].peerConnection
-      iceCandidate   = new RTCIceCandidate(payload.candidate)
-
-      peerConnection.addIceCandidate(iceCandidate)
-
-      @trigger 'candidate', payload
+      @_handleCandidate(payload)
 
     @vegaClient.on 'peerHangUp', (payload) =>
       @trigger 'peerHangUp', payload
 
-  _handleCallAccepted: (peers) =>
+  _handleCandidate: (payload) ->
+    peerConnection = @peerStore[payload.peerId].peerConnection
+    iceCandidate   = new RTCIceCandidate(payload.candidate)
+
+    peerConnection.addIceCandidate(iceCandidate)
+
+    @trigger 'candidate', payload
+
+  _handleCallAccepted: (peers) ->
     peers.forEach (peer) =>
       @_addPeerToStore(peer)
 
