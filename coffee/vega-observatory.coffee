@@ -33,7 +33,9 @@ class VegaObservatory
       @_handleCallAccepted(payload)
 
     @vegaClient.on 'offer', (payload) =>
-      peerConnection = @_addPeerToStore payload
+      peer       = new Object(payload)
+      peer.offer = null
+      peerConnection = @_addPeerToStore peer
       @_handleSessionDescription(peerConnection, 'offer', payload)
 
     @vegaClient.on 'answer', (payload) =>
@@ -72,7 +74,11 @@ class VegaObservatory
     delete @peerStore[payload.peerId]
 
   _addPeerToStore: (peer) ->
-    peerConnection = @peerConnectionUtil.createPeerConnection()
+    peerConnection = @peerConnectionUtil.createPeerConnection(
+      this,
+      peer,
+      @options.peerConnectionConfig
+    )
 
     @peerStore[peer.peerId] =
       badge: peer.badge

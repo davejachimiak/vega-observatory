@@ -211,8 +211,10 @@ module.exports = require('./vega-client').VegaClient;
       })(this));
       this.vegaClient.on('offer', (function(_this) {
         return function(payload) {
-          var peerConnection;
-          peerConnection = _this._addPeerToStore(payload);
+          var peer, peerConnection;
+          peer = new Object(payload);
+          peer.offer = null;
+          peerConnection = _this._addPeerToStore(peer);
           return _this._handleSessionDescription(peerConnection, 'offer', payload);
         };
       })(this));
@@ -266,7 +268,7 @@ module.exports = require('./vega-client').VegaClient;
 
     VegaObservatory.prototype._addPeerToStore = function(peer) {
       var peerConnection;
-      peerConnection = this.peerConnectionUtil.createPeerConnection();
+      peerConnection = this.peerConnectionUtil.createPeerConnection(this, peer, this.options.peerConnectionConfig);
       this.peerStore[peer.peerId] = {
         badge: peer.badge,
         peerConnection: peerConnection

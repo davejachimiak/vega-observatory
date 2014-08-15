@@ -3,10 +3,12 @@ describe 'VegaObservatory', ->
     class window.RTCSessionDescription
     class window.RTCIceCandidate
 
+    @peerConnectionConfig = new Object
     options =
       url: 'ws://0.0.0.0:3000'
       roomId: '/abc123'
       badge: {}
+      peerConnectionConfig: @peerConnectionConfig
     @vegaObservatory = new VegaObservatory options
     @peerConnectionUtil = @vegaObservatory.peerConnectionUtil
     @vegaClient = @vegaObservatory.vegaClient
@@ -62,14 +64,21 @@ describe 'VegaObservatory', ->
 
   describe 'vega client callbacks', ->
     beforeEach ->
-      sinon.collection.stub(@peerConnectionUtil, 'createPeerConnection').
-        returns @peerConnection = setRemoteDescription: ->
+      @peerConnection = setRemoteDescription: ->
+      @createPeerConnection = sinon.collection.stub(@peerConnectionUtil, 'createPeerConnection')
 
     describe 'on callAccepted', ->
       beforeEach ->
         @peer1 = { peerId: 'peerId1', badge: { name: 'Dave' } }
         @peer2 = { peerId: 'peerId2', badge: { name: 'Allie' } }
         @peers = [@peer1, @peer2]
+
+        @peers.forEach (peer) =>
+          @createPeerConnection.withArgs(
+            @vegaObservatory,
+            peer,
+            @peerConnectionConfig
+          ).returns @peerConnection
 
       it 'saves references to all peers in the response', ->
         @vegaClient.trigger('callAccepted', @peers)
@@ -95,10 +104,18 @@ describe 'VegaObservatory', ->
     describe 'on offer', ->
       beforeEach ->
         @badge = { name: 'Dave' }
-        @payload =
+        peer =
           peerId: 'peerId'
           badge: @badge
-          offer: { 'offer key': 'offer value' }
+        @payload = peer
+        offer = { 'offer key': 'offer value' }
+        @payload.offer = offer
+
+        @createPeerConnection.withArgs(
+          @vegaObservatory,
+          peer,
+          @peerConnectionConfig
+        ).returns @peerConnection
 
         @setRemoteDescription =
           sinon.collection.stub @peerConnection, 'setRemoteDescription'

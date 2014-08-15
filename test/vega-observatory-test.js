@@ -15,10 +15,12 @@
         return RTCIceCandidate;
 
       })();
+      this.peerConnectionConfig = new Object;
       options = {
         url: 'ws://0.0.0.0:3000',
         roomId: '/abc123',
-        badge: {}
+        badge: {},
+        peerConnectionConfig: this.peerConnectionConfig
       };
       this.vegaObservatory = new VegaObservatory(options);
       this.peerConnectionUtil = this.vegaObservatory.peerConnectionUtil;
@@ -83,9 +85,10 @@
     });
     return describe('vega client callbacks', function() {
       beforeEach(function() {
-        return sinon.collection.stub(this.peerConnectionUtil, 'createPeerConnection').returns(this.peerConnection = {
+        this.peerConnection = {
           setRemoteDescription: function() {}
-        });
+        };
+        return this.createPeerConnection = sinon.collection.stub(this.peerConnectionUtil, 'createPeerConnection');
       });
       describe('on callAccepted', function() {
         beforeEach(function() {
@@ -101,7 +104,12 @@
               name: 'Allie'
             }
           };
-          return this.peers = [this.peer1, this.peer2];
+          this.peers = [this.peer1, this.peer2];
+          return this.peers.forEach((function(_this) {
+            return function(peer) {
+              return _this.createPeerConnection.withArgs(_this.vegaObservatory, peer, _this.peerConnectionConfig).returns(_this.peerConnection);
+            };
+          })(this));
         });
         it('saves references to all peers in the response', function() {
           this.vegaClient.trigger('callAccepted', this.peers);
@@ -128,16 +136,20 @@
       });
       describe('on offer', function() {
         beforeEach(function() {
+          var offer, peer;
           this.badge = {
             name: 'Dave'
           };
-          this.payload = {
+          peer = {
             peerId: 'peerId',
-            badge: this.badge,
-            offer: {
-              'offer key': 'offer value'
-            }
+            badge: this.badge
           };
+          this.payload = peer;
+          offer = {
+            'offer key': 'offer value'
+          };
+          this.payload.offer = offer;
+          this.createPeerConnection.withArgs(this.vegaObservatory, peer, this.peerConnectionConfig).returns(this.peerConnection);
           this.setRemoteDescription = sinon.collection.stub(this.peerConnection, 'setRemoteDescription');
           return this.rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription);
         });
