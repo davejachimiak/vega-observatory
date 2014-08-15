@@ -10,6 +10,7 @@
   VegaObservatory = (function() {
     function VegaObservatory(options) {
       this.options = options;
+      this._handleAnswer = __bind(this._handleAnswer, this);
       this._handleOffer = __bind(this._handleOffer, this);
       this._handleCallAccepted = __bind(this._handleCallAccepted, this);
       this.vegaClient = new VegaClient(this.options.url, this.options.roomId, this.options.badge);
@@ -47,16 +48,16 @@
       })(this));
       this.vegaClient.on('offer', (function(_this) {
         return function(payload) {
-          return _this._handleOffer(payload);
+          var peerConnection;
+          peerConnection = _this._addPeerToStore(payload);
+          return _this._setDescription(peerConnection, 'offer', payload);
         };
       })(this));
       return this.vegaClient.on('answer', (function(_this) {
         return function(payload) {
-          var peerConnection, sessionDescription;
+          var peerConnection;
           peerConnection = _this.peerStore[payload.peerId].peerConnection;
-          sessionDescription = new RTCSessionDescription(payload.answer);
-          peerConnection.setRemoteDescription(sessionDescription);
-          return _this.trigger('answer', payload);
+          return _this._setDescription(peerConnection, 'answer', payload);
         };
       })(this));
     };
@@ -70,12 +71,27 @@
       return this.trigger('callAccepted', peers);
     };
 
+    VegaObservatory.prototype._setDescription = function(peerConnection, descriptionType, payload) {
+      var sessionDescription;
+      sessionDescription = new RTCSessionDescription(payload[descriptionType]);
+      peerConnection.setRemoteDescription(sessionDescription);
+      return this.trigger(descriptionType, payload);
+    };
+
     VegaObservatory.prototype._handleOffer = function(payload) {
       var peerConnection, sessionDescription;
       peerConnection = this._addPeerToStore(payload);
       sessionDescription = new RTCSessionDescription(payload.offer);
       peerConnection.setRemoteDescription(sessionDescription);
       return this.trigger('offer', payload);
+    };
+
+    VegaObservatory.prototype._handleAnswer = function(payload) {
+      var peerConnection, sessionDescription;
+      peerConnection = this.peerStore[payload.peerId].peerConnection;
+      sessionDescription = new RTCSessionDescription(payload.answer);
+      peerConnection.setRemoteDescription(sessionDescription);
+      return this.trigger('answer', payload);
     };
 
     VegaObservatory.prototype._addPeerToStore = function(peer) {
