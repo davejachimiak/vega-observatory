@@ -36,6 +36,8 @@ class VegaObservatory
 
       peerConnection.setRemoteDescription(sessionDescription)
 
+      @trigger 'answer', payload
+
   _handleCallAccepted: (peers) =>
     peers.forEach (peer) =>
       @_addPeerToStore(peer)

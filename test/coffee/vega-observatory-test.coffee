@@ -111,3 +111,13 @@ describe 'VegaObservatory', ->
         @vegaClient.trigger('answer', @payload)
 
         expect(@setRemoteDescription).to.have.been.calledWith @rtcSessionDescription
+
+      it 'triggers an answer event', ->
+        object = {}
+
+        @vegaObservatory.on 'answer', (payload) ->
+          object.payload = payload
+
+        @vegaClient.trigger('answer', @payload)
+
+        expect(object.payload).to.eq @payload

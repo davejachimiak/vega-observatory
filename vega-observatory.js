@@ -55,7 +55,8 @@
           var peerConnection, sessionDescription;
           peerConnection = _this.peerStore[payload.peerId].peerConnection;
           sessionDescription = new RTCSessionDescription(payload.answer);
-          return peerConnection.setRemoteDescription(sessionDescription);
+          peerConnection.setRemoteDescription(sessionDescription);
+          return _this.trigger('answer', payload);
         };
       })(this));
     };

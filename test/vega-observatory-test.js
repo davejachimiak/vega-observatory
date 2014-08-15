@@ -135,9 +135,18 @@
           this.setRemoteDescription = sinon.collection.stub(this.peerConnection, 'setRemoteDescription');
           return this.rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription);
         });
-        return it('sets the answer on the peer connection via session description', function() {
+        it('sets the answer on the peer connection via session description', function() {
           this.vegaClient.trigger('answer', this.payload);
           return expect(this.setRemoteDescription).to.have.been.calledWith(this.rtcSessionDescription);
+        });
+        return it('triggers an answer event', function() {
+          var object;
+          object = {};
+          this.vegaObservatory.on('answer', function(payload) {
+            return object.payload = payload;
+          });
+          this.vegaClient.trigger('answer', this.payload);
+          return expect(object.payload).to.eq(this.payload);
         });
       });
     });
