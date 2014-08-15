@@ -58,13 +58,18 @@
           return _this._handleSessionDescription(peerConnection, 'answer', payload);
         };
       })(this));
-      return this.vegaClient.on('candidate', (function(_this) {
+      this.vegaClient.on('candidate', (function(_this) {
         return function(payload) {
           var iceCandidate, peerConnection;
           peerConnection = _this.peerStore[payload.peerId].peerConnection;
           iceCandidate = new RTCIceCandidate(payload.candidate);
           peerConnection.addIceCandidate(iceCandidate);
           return _this.trigger('candidate', payload);
+        };
+      })(this));
+      return this.vegaClient.on('peerHangUp', (function(_this) {
+        return function(payload) {
+          return _this.trigger('peerHangUp', payload);
         };
       })(this));
     };

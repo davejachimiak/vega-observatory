@@ -43,6 +43,9 @@ class VegaObservatory
 
       @trigger 'candidate', payload
 
+    @vegaClient.on 'peerHangUp', (payload) =>
+      @trigger 'peerHangUp', payload
+
   _handleCallAccepted: (peers) =>
     peers.forEach (peer) =>
       @_addPeerToStore(peer)

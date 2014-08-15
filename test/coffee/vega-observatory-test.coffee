@@ -157,3 +157,26 @@ describe 'VegaObservatory', ->
         @vegaClient.trigger 'candidate', @payload
 
         expect(object.payload).to.eq @payload
+
+    describe 'on peerHangUp', ->
+      beforeEach ->
+        @badge = { name: 'Dave' }
+        @peerId = 'peerId'
+        @vegaObservatory.peerStore =
+          'peerId':
+            badge: @badge
+            peerConnection: @peerConnection
+
+        @payload =
+          candidate: { an: 'candidate' }
+          peerId: @peerId
+
+      it 'triggers a peerHangUp event', ->
+        object = {}
+
+        @vegaObservatory.on 'peerHangUp', (payload) ->
+          object.payload = payload
+
+        @vegaClient.trigger 'peerHangUp', @payload
+
+        expect(object.payload).to.eq @payload

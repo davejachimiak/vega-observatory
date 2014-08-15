@@ -156,7 +156,7 @@
           return expect(object.payload).to.eq(this.payload);
         });
       });
-      return describe('on candidate', function() {
+      describe('on candidate', function() {
         beforeEach(function() {
           this.peerConnection = {
             addIceCandidate: function() {}
@@ -191,6 +191,35 @@
             return object.payload = payload;
           });
           this.vegaClient.trigger('candidate', this.payload);
+          return expect(object.payload).to.eq(this.payload);
+        });
+      });
+      return describe('on peerHangUp', function() {
+        beforeEach(function() {
+          this.badge = {
+            name: 'Dave'
+          };
+          this.peerId = 'peerId';
+          this.vegaObservatory.peerStore = {
+            'peerId': {
+              badge: this.badge,
+              peerConnection: this.peerConnection
+            }
+          };
+          return this.payload = {
+            candidate: {
+              an: 'candidate'
+            },
+            peerId: this.peerId
+          };
+        });
+        return it('triggers a peerHangUp event', function() {
+          var object;
+          object = {};
+          this.vegaObservatory.on('peerHangUp', function(payload) {
+            return object.payload = payload;
+          });
+          this.vegaClient.trigger('peerHangUp', this.payload);
           return expect(object.payload).to.eq(this.payload);
         });
       });
