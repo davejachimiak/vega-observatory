@@ -8,7 +8,7 @@ describe 'VegaObservatory', ->
       roomId: '/abc123'
       badge: {}
     @vegaObservatory = new VegaObservatory options
-    @peerConnectionFactory = @vegaObservatory.peerConnectionFactory
+    @peerConnectionUtil = @vegaObservatory.peerConnectionUtil
     @vegaClient = @vegaObservatory.vegaClient
 
   afterEach ->
@@ -22,9 +22,11 @@ describe 'VegaObservatory', ->
 
       expect(call).to.have.been.called
 
-  describe 'callbacks', ->
+  describe '#initiateOffer', ->
+
+  describe 'vega client callbacks', ->
     beforeEach ->
-      sinon.collection.stub(@peerConnectionFactory, 'create').
+      sinon.collection.stub(@peerConnectionUtil, 'createPeerConnection').
         returns @peerConnection = setRemoteDescription: ->
 
     describe 'on callAccepted', ->

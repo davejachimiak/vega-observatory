@@ -21,7 +21,7 @@
         badge: {}
       };
       this.vegaObservatory = new VegaObservatory(options);
-      this.peerConnectionFactory = this.vegaObservatory.peerConnectionFactory;
+      this.peerConnectionUtil = this.vegaObservatory.peerConnectionUtil;
       return this.vegaClient = this.vegaObservatory.vegaClient;
     });
     afterEach(function() {
@@ -35,9 +35,10 @@
         return expect(call).to.have.been.called;
       });
     });
-    return describe('callbacks', function() {
+    describe('#initiateOffer', function() {});
+    return describe('vega client callbacks', function() {
       beforeEach(function() {
-        return sinon.collection.stub(this.peerConnectionFactory, 'create').returns(this.peerConnection = {
+        return sinon.collection.stub(this.peerConnectionUtil, 'createPeerConnection').returns(this.peerConnection = {
           setRemoteDescription: function() {}
         });
       });

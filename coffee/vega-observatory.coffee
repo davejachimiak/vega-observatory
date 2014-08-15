@@ -1,27 +1,16 @@
-VegaClient            = require('vega-client')
-PeerConnectionFactory = require('./private/peer-connection-factory')
+VegaClient         = require('vega-client')
+PeerConnectionUtil = require('./private/peer-connection-util')
 
 class VegaObservatory
   constructor: (@options) ->
     @vegaClient = new VegaClient(@options.url, @options.roomId, @options.badge)
-    @peerConnectionFactory = PeerConnectionFactory
+    @peerConnectionUtil = PeerConnectionUtil
     @callbacks = {}
     @peerStore = {}
     @_setClientCallbacks()
 
   call: ->
     @vegaClient.call()
-
-  on: (event, callback) ->
-    @callbacks[event] ||= []
-    @callbacks[event].push(callback)
-
-  trigger: (event) ->
-    args = Array.prototype.slice.call(arguments, 1)
-
-    if callbacks = @callbacks[event]
-      callbacks.forEach (callback) ->
-        callback.apply(this, args)
 
   _setClientCallbacks: ->
     @vegaClient.on 'callAccepted', (payload) =>
@@ -67,12 +56,23 @@ class VegaObservatory
     delete @peerStore[payload.peerId]
 
   _addPeerToStore: (peer) ->
-    peerConnection = @peerConnectionFactory.create()
+    peerConnection = @peerConnectionUtil.createPeerConnection()
 
     @peerStore[peer.peerId] =
       badge: peer.badge
       peerConnection: peerConnection
 
     peerConnection
+
+  on: (event, callback) ->
+    @callbacks[event] ||= []
+    @callbacks[event].push(callback)
+
+  trigger: (event) ->
+    args = Array.prototype.slice.call(arguments, 1)
+
+    if callbacks = @callbacks[event]
+      callbacks.forEach (callback) ->
+        callback.apply(this, args)
 
 module.exports = VegaObservatory
