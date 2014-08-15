@@ -63,18 +63,9 @@
       })(this));
       return this.vegaClient.on('peerHangUp', (function(_this) {
         return function(payload) {
-          _this.trigger('peerHangUp', payload);
-          return delete _this.peerStore[payload.peerId];
+          return _this._handlePeerHangUp(payload);
         };
       })(this));
-    };
-
-    VegaObservatory.prototype._handleCandidate = function(payload) {
-      var iceCandidate, peerConnection;
-      peerConnection = this.peerStore[payload.peerId].peerConnection;
-      iceCandidate = new RTCIceCandidate(payload.candidate);
-      peerConnection.addIceCandidate(iceCandidate);
-      return this.trigger('candidate', payload);
     };
 
     VegaObservatory.prototype._handleCallAccepted = function(peers) {
@@ -91,6 +82,19 @@
       sessionDescription = new RTCSessionDescription(payload[descriptionType]);
       peerConnection.setRemoteDescription(sessionDescription);
       return this.trigger(descriptionType, payload);
+    };
+
+    VegaObservatory.prototype._handleCandidate = function(payload) {
+      var iceCandidate, peerConnection;
+      peerConnection = this.peerStore[payload.peerId].peerConnection;
+      iceCandidate = new RTCIceCandidate(payload.candidate);
+      peerConnection.addIceCandidate(iceCandidate);
+      return this.trigger('candidate', payload);
+    };
+
+    VegaObservatory.prototype._handlePeerHangUp = function(payload) {
+      this.trigger('peerHangUp', payload);
+      return delete this.peerStore[payload.peerId];
     };
 
     VegaObservatory.prototype._addPeerToStore = function(peer) {

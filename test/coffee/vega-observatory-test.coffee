@@ -168,7 +168,6 @@ describe 'VegaObservatory', ->
             peerConnection: @peerConnection
 
         @payload =
-          candidate: { an: 'candidate' }
           peerId: @peerId
 
       it 'triggers a peerHangUp event', ->

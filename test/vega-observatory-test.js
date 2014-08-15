@@ -207,9 +207,6 @@
             }
           };
           return this.payload = {
-            candidate: {
-              an: 'candidate'
-            },
             peerId: this.peerId
           };
         });
