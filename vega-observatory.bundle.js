@@ -212,7 +212,8 @@ module.exports = require('./vega-client').VegaClient;
       })(this));
       return this.vegaClient.on('peerHangUp', (function(_this) {
         return function(payload) {
-          return _this.trigger('peerHangUp', payload);
+          _this.trigger('peerHangUp', payload);
+          return delete _this.peerStore[payload.peerId];
         };
       })(this));
     };

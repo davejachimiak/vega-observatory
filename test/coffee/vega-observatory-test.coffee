@@ -180,3 +180,8 @@ describe 'VegaObservatory', ->
         @vegaClient.trigger 'peerHangUp', @payload
 
         expect(object.payload).to.eq @payload
+
+      it 'removes the peer from the peer store', ->
+        @vegaClient.trigger 'peerHangUp', @payload
+
+        expect(@vegaObservatory.peerStore).to.eql {}

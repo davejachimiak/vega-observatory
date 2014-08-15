@@ -40,6 +40,7 @@ class VegaObservatory
 
     @vegaClient.on 'peerHangUp', (payload) =>
       @trigger 'peerHangUp', payload
+      delete @peerStore[payload.peerId]
 
   _handleCandidate: (payload) ->
     peerConnection = @peerStore[payload.peerId].peerConnection

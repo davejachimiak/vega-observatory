@@ -213,7 +213,7 @@
             peerId: this.peerId
           };
         });
-        return it('triggers a peerHangUp event', function() {
+        it('triggers a peerHangUp event', function() {
           var object;
           object = {};
           this.vegaObservatory.on('peerHangUp', function(payload) {
@@ -221,6 +221,10 @@
           });
           this.vegaClient.trigger('peerHangUp', this.payload);
           return expect(object.payload).to.eq(this.payload);
+        });
+        return it('removes the peer from the peer store', function() {
+          this.vegaClient.trigger('peerHangUp', this.payload);
+          return expect(this.vegaObservatory.peerStore).to.eql({});
         });
       });
     });
