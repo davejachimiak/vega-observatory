@@ -1,5 +1,7 @@
 describe 'VegaObservatory', ->
   beforeEach ->
+    class window.RTCSessionDescription
+
     options =
       url: 'ws://0.0.0.0:3000'
       roomId: '/abc123'
@@ -22,7 +24,7 @@ describe 'VegaObservatory', ->
   describe 'callbacks', ->
     beforeEach ->
       sinon.collection.stub(@peerConnectionFactory, 'create').
-        returns @peerConnection = 'a peer connection!'
+        returns @peerConnection = setRemoteDescription: ->
 
     describe 'on callAccepted', ->
       beforeEach ->
@@ -59,6 +61,11 @@ describe 'VegaObservatory', ->
           badge: @badge
           offer: { 'offer key': 'offer value' }
 
+        @setRemoteDescription =
+          sinon.collection.stub @peerConnection, 'setRemoteDescription'
+
+        @rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription)
+
       it 'saves a reference to the peer', ->
         @vegaClient.trigger 'offer', @payload
 
@@ -66,6 +73,11 @@ describe 'VegaObservatory', ->
           "peerId":
             badge: @badge
             peerConnection: @peerConnection
+
+      it 'sets the offer on the peer connection', ->
+        @vegaClient.trigger 'offer', @payload
+
+        expect(@setRemoteDescription).to.have.been.calledWith @rtcSessionDescription
 
       it 'triggers an offer event', ->
         object = {}

@@ -37,12 +37,20 @@ class VegaObservatory
     @trigger 'callAccepted', peers
 
   _handleOffer: (payload) =>
-    @_addPeerToStore payload
+    peerConnection     = @_addPeerToStore payload
+    sessionDescription = new RTCSessionDescription(payload.offer)
+
+    peerConnection.setRemoteDescription(sessionDescription)
+
     @trigger 'offer', payload
 
   _addPeerToStore: (peer) ->
+    peerConnection = @peerConnectionFactory.create()
+
     @peerStore[peer.peerId] =
       badge: peer.badge
-      peerConnection: @peerConnectionFactory.create()
+      peerConnection: peerConnection
+
+    peerConnection
 
 module.exports = VegaObservatory

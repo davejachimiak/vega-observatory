@@ -62,15 +62,21 @@
     };
 
     VegaObservatory.prototype._handleOffer = function(payload) {
-      this._addPeerToStore(payload);
+      var peerConnection, sessionDescription;
+      peerConnection = this._addPeerToStore(payload);
+      sessionDescription = new RTCSessionDescription(payload.offer);
+      peerConnection.setRemoteDescription(sessionDescription);
       return this.trigger('offer', payload);
     };
 
     VegaObservatory.prototype._addPeerToStore = function(peer) {
-      return this.peerStore[peer.peerId] = {
+      var peerConnection;
+      peerConnection = this.peerConnectionFactory.create();
+      this.peerStore[peer.peerId] = {
         badge: peer.badge,
-        peerConnection: this.peerConnectionFactory.create()
+        peerConnection: peerConnection
       };
+      return peerConnection;
     };
 
     return VegaObservatory;

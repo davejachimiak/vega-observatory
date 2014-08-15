@@ -3,6 +3,12 @@
   describe('VegaObservatory', function() {
     beforeEach(function() {
       var options;
+      window.RTCSessionDescription = (function() {
+        function RTCSessionDescription() {}
+
+        return RTCSessionDescription;
+
+      })();
       options = {
         url: 'ws://0.0.0.0:3000',
         roomId: '/abc123',
@@ -25,7 +31,9 @@
     });
     return describe('callbacks', function() {
       beforeEach(function() {
-        return sinon.collection.stub(this.peerConnectionFactory, 'create').returns(this.peerConnection = 'a peer connection!');
+        return sinon.collection.stub(this.peerConnectionFactory, 'create').returns(this.peerConnection = {
+          setRemoteDescription: function() {}
+        });
       });
       describe('on callAccepted', function() {
         beforeEach(function() {
@@ -71,13 +79,15 @@
           this.badge = {
             name: 'Dave'
           };
-          return this.payload = {
+          this.payload = {
             peerId: 'peerId',
             badge: this.badge,
             offer: {
               'offer key': 'offer value'
             }
           };
+          this.setRemoteDescription = sinon.collection.stub(this.peerConnection, 'setRemoteDescription');
+          return this.rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription);
         });
         it('saves a reference to the peer', function() {
           this.vegaClient.trigger('offer', this.payload);
@@ -87,6 +97,10 @@
               peerConnection: this.peerConnection
             }
           });
+        });
+        it('sets the offer on the peer connection', function() {
+          this.vegaClient.trigger('offer', this.payload);
+          return expect(this.setRemoteDescription).to.have.been.calledWith(this.rtcSessionDescription);
         });
         return it('triggers an offer event', function() {
           var object;
