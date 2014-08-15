@@ -180,9 +180,18 @@
           this.addIceCandidate = sinon.collection.stub(this.peerConnection, 'addIceCandidate');
           return this.rtcIceCandidate = sinon.createStubInstance(window.RTCIceCandidate);
         });
-        return it('adds the ice candidate to the proper peer connection', function() {
+        it('adds the ice candidate to the proper peer connection', function() {
           this.vegaClient.trigger('candidate', this.payload);
           return expect(this.addIceCandidate).to.have.been.calledWith(this.rtcIceCandidate);
+        });
+        return it('triggers a candidate event with the payload', function() {
+          var object;
+          object = {};
+          this.vegaObservatory.on('candidate', function(payload) {
+            return object.payload = payload;
+          });
+          this.vegaClient.trigger('candidate', this.payload);
+          return expect(object.payload).to.eq(this.payload);
         });
       });
     });

@@ -147,3 +147,13 @@ describe 'VegaObservatory', ->
         @vegaClient.trigger 'candidate', @payload
 
         expect(@addIceCandidate).to.have.been.calledWith @rtcIceCandidate
+
+      it 'triggers a candidate event with the payload', ->
+        object = {}
+
+        @vegaObservatory.on 'candidate', (payload) ->
+          object.payload = payload
+
+        @vegaClient.trigger 'candidate', @payload
+
+        expect(object.payload).to.eq @payload
