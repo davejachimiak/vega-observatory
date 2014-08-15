@@ -30,6 +30,12 @@ class VegaObservatory
     @vegaClient.on 'offer', (payload) =>
       @_handleOffer(payload)
 
+    @vegaClient.on 'answer', (payload) =>
+      peerConnection = @peerStore[payload.peerId].peerConnection
+      sessionDescription = new RTCSessionDescription(payload.answer)
+
+      peerConnection.setRemoteDescription(sessionDescription)
+
   _handleCallAccepted: (peers) =>
     peers.forEach (peer) =>
       @_addPeerToStore(peer)

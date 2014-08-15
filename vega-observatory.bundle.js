@@ -194,9 +194,17 @@ module.exports = require('./vega-client').VegaClient;
           return _this._handleCallAccepted(payload);
         };
       })(this));
-      return this.vegaClient.on('offer', (function(_this) {
+      this.vegaClient.on('offer', (function(_this) {
         return function(payload) {
           return _this._handleOffer(payload);
+        };
+      })(this));
+      return this.vegaClient.on('answer', (function(_this) {
+        return function(payload) {
+          var peerConnection, sessionDescription;
+          peerConnection = _this.peerStore[payload.peerId].peerConnection;
+          sessionDescription = new RTCSessionDescription(payload.answer);
+          return peerConnection.setRemoteDescription(sessionDescription);
         };
       })(this));
     };

@@ -74,7 +74,7 @@
           return expect(object.peers).to.eq(this.peers);
         });
       });
-      return describe('on offer', function() {
+      describe('on offer', function() {
         beforeEach(function() {
           this.badge = {
             name: 'Dave'
@@ -98,7 +98,7 @@
             }
           });
         });
-        it('sets the offer on the peer connection', function() {
+        it('sets the offer on the peer connection via session description', function() {
           this.vegaClient.trigger('offer', this.payload);
           return expect(this.setRemoteDescription).to.have.been.calledWith(this.rtcSessionDescription);
         });
@@ -110,6 +110,34 @@
           });
           this.vegaClient.trigger('offer', this.payload);
           return expect(object.payload).to.eq(this.payload);
+        });
+      });
+      return describe('on answer', function() {
+        beforeEach(function() {
+          this.peerConnection = {
+            setRemoteDescription: function() {}
+          };
+          this.badge = {
+            name: 'Dave'
+          };
+          this.vegaObservatory.peerStore = {
+            'peerId': {
+              badge: this.badge,
+              peerConnection: this.peerConnection
+            }
+          };
+          this.payload = {
+            answer: {
+              an: 'answer'
+            },
+            peerId: 'peerId'
+          };
+          this.setRemoteDescription = sinon.collection.stub(this.peerConnection, 'setRemoteDescription');
+          return this.rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription);
+        });
+        return it('sets the answer on the peer connection via session description', function() {
+          this.vegaClient.trigger('answer', this.payload);
+          return expect(this.setRemoteDescription).to.have.been.calledWith(this.rtcSessionDescription);
         });
       });
     });

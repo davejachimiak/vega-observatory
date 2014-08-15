@@ -74,7 +74,7 @@ describe 'VegaObservatory', ->
             badge: @badge
             peerConnection: @peerConnection
 
-      it 'sets the offer on the peer connection', ->
+      it 'sets the offer on the peer connection via session description', ->
         @vegaClient.trigger 'offer', @payload
 
         expect(@setRemoteDescription).to.have.been.calledWith @rtcSessionDescription
@@ -88,3 +88,26 @@ describe 'VegaObservatory', ->
         @vegaClient.trigger('offer', @payload)
 
         expect(object.payload).to.eq @payload
+
+    describe 'on answer', ->
+      beforeEach ->
+        @peerConnection = setRemoteDescription: ->
+        @badge = { name: 'Dave' }
+        @vegaObservatory.peerStore =
+          'peerId':
+            badge: @badge
+            peerConnection: @peerConnection
+
+        @payload =
+          answer: { an: 'answer' }
+          peerId: 'peerId'
+
+        @setRemoteDescription =
+          sinon.collection.stub @peerConnection, 'setRemoteDescription'
+
+        @rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription)
+
+      it 'sets the answer on the peer connection via session description', ->
+        @vegaClient.trigger('answer', @payload)
+
+        expect(@setRemoteDescription).to.have.been.calledWith @rtcSessionDescription
