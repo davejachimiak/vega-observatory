@@ -1,1 +1,6 @@
-module.exports = createPeerConnection: ->
+class PeerConnectionUtil
+  @createPeerConnection: ->
+
+  @descriptionCallbacks: ->
+
+module.exports = PeerConnectionUtil

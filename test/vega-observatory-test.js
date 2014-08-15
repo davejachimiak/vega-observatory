@@ -35,7 +35,29 @@
         return expect(call).to.have.been.called;
       });
     });
-    describe('#initiateOffer', function() {});
+    describe('#createOffer', function() {
+      return it('creates an offer on the peer connection with success and failure callbacks', function() {
+        var createOffer, errorCallback, successCallback;
+        this.peerConnection = {
+          createOffer: function() {}
+        };
+        this.peerId = 'peerId';
+        this.vegaObservatory.peerStore = {
+          'peerId': {
+            badge: {
+              name: 'Dave'
+            },
+            peerConnection: this.peerConnection
+          }
+        };
+        successCallback = sinon.collection.mock();
+        errorCallback = sinon.collection.mock();
+        createOffer = sinon.collection.stub(this.peerConnection, 'createOffer');
+        sinon.collection.stub(this.peerConnectionUtil, 'descriptionCallbacks').withArgs(this.vegaClient, this.peerId, this.peerConnection, 'offer').returns([successCallback, errorCallback]);
+        this.vegaObservatory.createOffer(this.peerId);
+        return expect(createOffer).to.have.been.calledWith(successCallback, errorCallback);
+      });
+    });
     return describe('vega client callbacks', function() {
       beforeEach(function() {
         return sinon.collection.stub(this.peerConnectionUtil, 'createPeerConnection').returns(this.peerConnection = {

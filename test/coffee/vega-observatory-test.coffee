@@ -22,7 +22,24 @@ describe 'VegaObservatory', ->
 
       expect(call).to.have.been.called
 
-  describe '#initiateOffer', ->
+  describe '#createOffer', ->
+    it 'creates an offer on the peer connection with success and failure callbacks', ->
+      @peerConnection = createOffer: ->
+      @peerId = 'peerId'
+      @vegaObservatory.peerStore =
+        'peerId':
+          badge: { name: 'Dave' }
+          peerConnection: @peerConnection
+      successCallback = sinon.collection.mock()
+      errorCallback = sinon.collection.mock()
+      createOffer = sinon.collection.stub @peerConnection, 'createOffer'
+      sinon.collection.stub(@peerConnectionUtil, 'descriptionCallbacks').
+        withArgs(@vegaClient, @peerId, @peerConnection, 'offer').
+        returns [successCallback, errorCallback]
+
+      @vegaObservatory.createOffer(@peerId)
+
+      expect(createOffer).to.have.been.calledWith successCallback, errorCallback
 
   describe 'vega client callbacks', ->
     beforeEach ->
