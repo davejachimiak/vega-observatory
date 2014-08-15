@@ -5,11 +5,11 @@
   PeerConnectionUtil = (function() {
     function PeerConnectionUtil() {}
 
-    PeerConnectionUtil.createPeerConnection = function(observatory, peerId, pcConstructor) {
+    PeerConnectionUtil.createPeerConnection = function(observatory, peerId, config, pcConstructor) {
       if (pcConstructor == null) {
         pcConstructor = RTCPeerConnection;
       }
-      return new pcConstructor;
+      return new pcConstructor(config);
     };
 
     PeerConnectionUtil.descriptionCallbacks = function() {};

@@ -8,10 +8,10 @@ describe 'PeerConnectionUtil', ->
     beforeEach ->
       vegaObservatory = {}
       peerId = 'peerId'
+      peerConnectionConfig = {}
       @pcConstructor = (arg) ->
-        if !arg
-          throw new Error 'must include peer connection config!'
-      @peerConnection = @peerConnectionUtil.createPeerConnection(vegaObservatory, peerId, @pcConstructor)
+        throw new Error 'must include peer connection config!' if !arg
+      @peerConnection = @peerConnectionUtil.createPeerConnection(vegaObservatory, peerId, peerConnectionConfig, @pcConstructor)
 
     it 'returns an RTCPeerConnection', ->
       expect(@peerConnection).to.be.instanceOf @pcConstructor

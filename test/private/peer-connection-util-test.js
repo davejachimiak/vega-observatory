@@ -10,15 +10,16 @@
     });
     return describe('.createPeerConnection', function() {
       beforeEach(function() {
-        var peerId, vegaObservatory;
+        var peerConnectionConfig, peerId, vegaObservatory;
         vegaObservatory = {};
         peerId = 'peerId';
+        peerConnectionConfig = {};
         this.pcConstructor = function(arg) {
           if (!arg) {
             throw new Error('must include peer connection config!');
           }
         };
-        return this.peerConnection = this.peerConnectionUtil.createPeerConnection(vegaObservatory, peerId, this.pcConstructor);
+        return this.peerConnection = this.peerConnectionUtil.createPeerConnection(vegaObservatory, peerId, peerConnectionConfig, this.pcConstructor);
       });
       return it('returns an RTCPeerConnection', function() {
         return expect(this.peerConnection).to.be.instanceOf(this.pcConstructor);

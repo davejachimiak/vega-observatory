@@ -1,6 +1,6 @@
 class PeerConnectionUtil
-  @createPeerConnection: (observatory, peerId, pcConstructor=RTCPeerConnection) ->
-    new pcConstructor
+  @createPeerConnection: (observatory, peerId, config, pcConstructor=RTCPeerConnection) ->
+    new pcConstructor(config)
 
   @descriptionCallbacks: ->
 
