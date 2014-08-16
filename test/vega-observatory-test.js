@@ -56,6 +56,24 @@
         return expect(offer).to.have.been.calledWith(theOffer, peerId);
       });
     });
+    describe('#sendAnswer', function() {
+      return it('delegates to the vega client', function() {
+        var answer, peerId, theAnswer;
+        theAnswer = new Object;
+        peerId = 'peerId';
+        answer = sinon.collection.stub(this.vegaClient, 'answer');
+        this.vegaObservatory.sendAnswer(theAnswer, peerId);
+        return expect(answer).to.have.been.calledWith(theAnswer, peerId);
+      });
+    });
+    describe('#hangUp', function() {
+      return it('sends a hangUp message to the vega client', function() {
+        var hangUp;
+        hangUp = sinon.collection.stub(this.vegaClient, 'hangUp');
+        this.vegaObservatory.hangUp();
+        return expect(hangUp).to.have.been.called;
+      });
+    });
     describe('#createOffer', function() {
       return it('creates an offer on the peer connection with success and failure callbacks', function() {
         var forOffer;

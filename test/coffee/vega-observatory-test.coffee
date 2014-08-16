@@ -40,6 +40,24 @@ describe 'VegaObservatory', ->
 
       expect(offer).to.have.been.calledWith theOffer, peerId
 
+  describe '#sendAnswer', ->
+    it 'delegates to the vega client', ->
+      theAnswer = new Object
+      peerId    = 'peerId'
+      answer = sinon.collection.stub @vegaClient, 'answer'
+
+      @vegaObservatory.sendAnswer theAnswer, peerId
+
+      expect(answer).to.have.been.calledWith theAnswer, peerId
+
+  describe '#hangUp', ->
+    it 'sends a hangUp message to the vega client', ->
+      hangUp = sinon.collection.stub @vegaClient, 'hangUp'
+
+      @vegaObservatory.hangUp()
+
+      expect(hangUp).to.have.been.called
+
   describe '#createOffer', ->
     it 'creates an offer on the peer connection with success and failure callbacks', ->
       @peerId = 'peerId'

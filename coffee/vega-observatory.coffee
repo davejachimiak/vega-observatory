@@ -19,6 +19,12 @@ class VegaObservatory
   sendOffer: (offer, peerId) ->
     @vegaClient.offer(offer, peerId)
 
+  sendAnswer: (answer, peerId) ->
+    @vegaClient.answer(answer, peerId)
+
+  hangUp: ->
+    @vegaClient.hangUp()
+
   createOffer: (peerId) ->
     peerConnection = @_peerConnection(peerId)
 

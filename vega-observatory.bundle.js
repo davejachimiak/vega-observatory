@@ -254,6 +254,14 @@ module.exports = require('./vega-client').VegaClient;
       return this.vegaClient.offer(offer, peerId);
     };
 
+    VegaObservatory.prototype.sendAnswer = function(answer, peerId) {
+      return this.vegaClient.answer(answer, peerId);
+    };
+
+    VegaObservatory.prototype.hangUp = function() {
+      return this.vegaClient.hangUp();
+    };
+
     VegaObservatory.prototype.createOffer = function(peerId) {
       var peerConnection;
       peerConnection = this._peerConnection(peerId);
