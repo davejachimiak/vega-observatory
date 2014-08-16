@@ -16,7 +16,6 @@ describe 'VegaObservatory', ->
       peerConnectionFactory: @peerConnectionFactory
       sessionDescriptionCreator: @sessionDescriptionCreator
     @vegaObservatory = new VegaObservatory options
-    @peerConnectionUtil = @vegaObservatory.peerConnectionUtil
     @vegaClient = @vegaObservatory.vegaClient
 
   afterEach ->

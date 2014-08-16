@@ -32,7 +32,6 @@
         sessionDescriptionCreator: this.sessionDescriptionCreator
       };
       this.vegaObservatory = new VegaObservatory(options);
-      this.peerConnectionUtil = this.vegaObservatory.peerConnectionUtil;
       return this.vegaClient = this.vegaObservatory.vegaClient;
     });
     afterEach(function() {
