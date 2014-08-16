@@ -1,4 +1,6 @@
 VegaClient = require('vega-client')
+PeerConnectionFactory = require('./private/peer-connection-factory')
+SessionDescriptionCreator = require('./private/session-description-creator')
 
 class VegaObservatory
   constructor: (@options) ->
@@ -6,7 +8,7 @@ class VegaObservatory
     @peerConnectionFactory =
       @options.peerConnectionFactory || PeerConnectionFactory
     @sessionDescriptionCreator =
-      @options.sessionDescriptionCreator || new SessionDescriptionCreator
+      @options.sessionDescriptionCreator || SessionDescriptionCreator
     @callbacks = {}
     @peerStore = {}
     @_setClientCallbacks()
