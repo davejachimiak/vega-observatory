@@ -16,12 +16,18 @@
 
   describe('SessionDescriptionCreator', function() {
     beforeEach(function() {
-      this.observatory = new Object;
+      this.observatory = {
+        sendOffer: function() {}
+      };
       this.peerId = 'an peer id';
+      this.localDescription = {
+        aGood: 'desc'
+      };
       this.peerConnection = {
         createOffer: function() {},
         createAnswer: function() {},
-        setLocalDescription: function() {}
+        setLocalDescription: function() {},
+        localDescription: this.localDescription
       };
       this.creator = new SessionDescriptionCreator(this.observatory, this.peerId, this.peerConnection);
       return this.failureCallback = this.creator.failureCallback;
@@ -56,7 +62,7 @@
         });
       });
     });
-    describe('successCallback', function() {
+    describe('#successCallback', function() {
       return it('returns a callback that sets a local description with proper args', function() {
         var description, onLocalDescriptionSuccess, setLocalDescription;
         onLocalDescriptionSuccess = function() {};
@@ -66,12 +72,20 @@
         return expect(setLocalDescription).to.have.been.calledWith(description, onLocalDescriptionSuccess, this.failureCallback);
       });
     });
-    return describe('failureCallback', function() {
+    describe('#failureCallback', function() {
       return it('logs the error', function() {
         var error, errorString;
         error = sinon.collection.stub(console, 'error');
         this.creator.failureCallback(errorString = 'AAAHHH');
         return expect(error).to.have.been.calledWith(errorString);
+      });
+    });
+    return describe('#sendOffer', function() {
+      return it('delegates to the observatory', function() {
+        var sendOffer;
+        sendOffer = sinon.collection.stub(this.observatory, 'sendOffer');
+        this.creator.sendOffer();
+        return expect(sendOffer).to.have.been.calledWith(this.localDescription, this.peerId);
       });
     });
   });

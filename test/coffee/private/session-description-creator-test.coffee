@@ -9,12 +9,17 @@ SessionDescriptionCreator = require('../../private/session-description-creator.j
 
 describe 'SessionDescriptionCreator', ->
   beforeEach ->
-    @observatory    = new Object
-    @peerId         = 'an peer id'
+    @observatory      =
+      sendOffer: ->
+      sendAnswer: ->
+    @peerId           = 'an peer id'
+    @localDescription = { aGood: 'desc' }
+
     @peerConnection =
       createOffer: ->
       createAnswer: ->
       setLocalDescription: ->
+      localDescription: @localDescription
 
     @creator = new SessionDescriptionCreator(
       @observatory, @peerId, @peerConnection
@@ -49,7 +54,7 @@ describe 'SessionDescriptionCreator', ->
 
         expect(createAnswer).to.have.been.calledWith @successCallback, @failureCallback
 
-  describe 'successCallback', ->
+  describe '#successCallback', ->
     it 'returns a callback that sets a local description with proper args', ->
       onLocalDescriptionSuccess = ->
       description = 'description'
@@ -62,10 +67,20 @@ describe 'SessionDescriptionCreator', ->
         description, onLocalDescriptionSuccess, @failureCallback
       )
 
-  describe 'failureCallback', ->
+  describe '#failureCallback', ->
     it 'logs the error', ->
       error = sinon.collection.stub console, 'error'
 
       @creator.failureCallback(errorString = 'AAAHHH')
 
       expect(error).to.have.been.calledWith errorString
+
+  describe '#sendOffer', ->
+    it 'delegates to the observatory', ->
+      sendOffer = sinon.collection.stub @observatory, 'sendOffer'
+
+      @creator.sendOffer()
+
+      expect(sendOffer).to.have.been.calledWith(
+        @localDescription, @peerId
+      )
