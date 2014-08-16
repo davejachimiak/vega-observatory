@@ -31,6 +31,10 @@
       return this.vegaClient.answer(answer, peerId);
     };
 
+    VegaObservatory.prototype.sendCandidate = function(candidate, peerId) {
+      return this.vegaClient.candidate(candidate, peerId);
+    };
+
     VegaObservatory.prototype.hangUp = function() {
       return this.vegaClient.hangUp();
     };

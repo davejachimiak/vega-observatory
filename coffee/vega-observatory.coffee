@@ -22,6 +22,9 @@ class VegaObservatory
   sendAnswer: (answer, peerId) ->
     @vegaClient.answer(answer, peerId)
 
+  sendCandidate: (candidate, peerId) ->
+    @vegaClient.candidate(candidate, peerId)
+
   hangUp: ->
     @vegaClient.hangUp()
 
