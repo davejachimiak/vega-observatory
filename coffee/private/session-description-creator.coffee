@@ -17,9 +17,11 @@ class SessionDescriptionCreator
 
   successCallback: (onLocalDescriptionSuccess) ->
     (description) =>
-      @peerConnection.setLocalDescription description, ->
-        onLocalDescriptionSuccess()
-      , @failureCallback
+      @peerConnection.setLocalDescription(
+        description,
+        onLocalDescriptionSuccess,
+        @failureCallback
+      )
 
   failureCallback: (error) ->
     console.error error

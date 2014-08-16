@@ -20,16 +20,17 @@
       this.peerId = 'an peer id';
       this.peerConnection = {
         createOffer: function() {},
-        createAnswer: function() {}
+        createAnswer: function() {},
+        setLocalDescription: function() {}
       };
-      return this.creator = new SessionDescriptionCreator(this.observatory, this.peerId, this.peerConnection);
+      this.creator = new SessionDescriptionCreator(this.observatory, this.peerId, this.peerConnection);
+      return this.failureCallback = this.creator.failureCallback;
     });
     afterEach(function() {
       return sinon.collection.restore();
     });
-    return describe('main public behavior', function() {
+    describe('main public behavior', function() {
       beforeEach(function() {
-        this.failureCallback = this.creator.failureCallback;
         return this.stubSuccessCallback = (function(_this) {
           return function(arg) {
             return sinon.collection.stub(_this.creator, 'successCallback').withArgs(arg).returns(_this.successCallback = new Object);
@@ -53,6 +54,16 @@
           this.creator.forAnswer();
           return expect(createAnswer).to.have.been.calledWith(this.successCallback, this.failureCallback);
         });
+      });
+    });
+    return describe('successCallback', function() {
+      return it('returns a callback that sets a local description with proper args', function() {
+        var description, onLocalDescriptionSuccess, setLocalDescription;
+        onLocalDescriptionSuccess = function() {};
+        description = 'description';
+        setLocalDescription = sinon.collection.stub(this.peerConnection, 'setLocalDescription');
+        this.creator.successCallback(onLocalDescriptionSuccess)(description);
+        return expect(setLocalDescription).to.have.been.calledWith(description, onLocalDescriptionSuccess, this.failureCallback);
       });
     });
   });

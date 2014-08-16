@@ -32,9 +32,7 @@
     SessionDescriptionCreator.prototype.successCallback = function(onLocalDescriptionSuccess) {
       return (function(_this) {
         return function(description) {
-          return _this.peerConnection.setLocalDescription(description, function() {
-            return onLocalDescriptionSuccess();
-          }, _this.failureCallback);
+          return _this.peerConnection.setLocalDescription(description, onLocalDescriptionSuccess, _this.failureCallback);
         };
       })(this);
     };

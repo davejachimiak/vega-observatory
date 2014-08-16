@@ -14,17 +14,18 @@ describe 'SessionDescriptionCreator', ->
     @peerConnection =
       createOffer: ->
       createAnswer: ->
+      setLocalDescription: ->
 
     @creator = new SessionDescriptionCreator(
       @observatory, @peerId, @peerConnection
     )
+    @failureCallback = @creator.failureCallback
 
   afterEach ->
     sinon.collection.restore()
 
   describe 'main public behavior', ->
     beforeEach ->
-      @failureCallback = @creator.failureCallback
       @stubSuccessCallback = (arg) =>
         sinon.collection.stub(@creator, 'successCallback').
           withArgs(arg).
@@ -47,3 +48,16 @@ describe 'SessionDescriptionCreator', ->
         @creator.forAnswer()
 
         expect(createAnswer).to.have.been.calledWith @successCallback, @failureCallback
+
+  describe 'successCallback', ->
+    it 'returns a callback that sets a local description with proper args', ->
+      onLocalDescriptionSuccess = ->
+      description = 'description'
+      setLocalDescription =
+        sinon.collection.stub @peerConnection, 'setLocalDescription'
+
+      @creator.successCallback(onLocalDescriptionSuccess)(description)
+
+      expect(setLocalDescription).to.have.been.calledWith(
+        description, onLocalDescriptionSuccess, @failureCallback
+      )
