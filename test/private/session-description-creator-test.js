@@ -56,7 +56,7 @@
         });
       });
     });
-    return describe('successCallback', function() {
+    describe('successCallback', function() {
       return it('returns a callback that sets a local description with proper args', function() {
         var description, onLocalDescriptionSuccess, setLocalDescription;
         onLocalDescriptionSuccess = function() {};
@@ -64,6 +64,14 @@
         setLocalDescription = sinon.collection.stub(this.peerConnection, 'setLocalDescription');
         this.creator.successCallback(onLocalDescriptionSuccess)(description);
         return expect(setLocalDescription).to.have.been.calledWith(description, onLocalDescriptionSuccess, this.failureCallback);
+      });
+    });
+    return describe('failureCallback', function() {
+      return it('logs the error', function() {
+        var error, errorString;
+        error = sinon.collection.stub(console, 'error');
+        this.creator.failureCallback(errorString = 'AAAHHH');
+        return expect(error).to.have.been.calledWith(errorString);
       });
     });
   });

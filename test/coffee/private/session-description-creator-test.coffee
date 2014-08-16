@@ -61,3 +61,11 @@ describe 'SessionDescriptionCreator', ->
       expect(setLocalDescription).to.have.been.calledWith(
         description, onLocalDescriptionSuccess, @failureCallback
       )
+
+  describe 'failureCallback', ->
+    it 'logs the error', ->
+      error = sinon.collection.stub console, 'error'
+
+      @creator.failureCallback(errorString = 'AAAHHH')
+
+      expect(error).to.have.been.calledWith errorString
