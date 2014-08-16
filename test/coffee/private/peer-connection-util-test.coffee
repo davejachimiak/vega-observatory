@@ -5,9 +5,9 @@ expect    = chai.expect
 
 chai.use sinonChai
 
-describe 'PeerConnectionUtil', ->
+describe 'PeerConnectionFactory', ->
   beforeEach ->
-    @peerConnectionUtil = require('../../private/peer-connection-util.js')
+    @peerConnectionFactory = require('../../private/peer-connection-factory.js')
 
   afterEach ->
     sinon.collection.restore()
@@ -27,7 +27,7 @@ describe 'PeerConnectionUtil', ->
         unless arg is peerConnectionConfig
           throw new Error 'must include peer connection config!'
 
-      @peerConnection = @peerConnectionUtil.createPeerConnection(@vegaObservatory, @peer, peerConnectionConfig, @pcConstructor)
+      @peerConnection = @peerConnectionFactory.create(@vegaObservatory, @peer, peerConnectionConfig, @pcConstructor)
 
     it 'returns an RTCPeerConnection', ->
       expect(@peerConnection).to.be.instanceOf @pcConstructor

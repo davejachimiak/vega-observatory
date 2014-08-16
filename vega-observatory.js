@@ -9,7 +9,7 @@
       this.options = options;
       this.vegaClient = new VegaClient(this.options.url, this.options.roomId, this.options.badge);
       this.peerConnectionFactory = this.options.peerConnectionFactory || PeerConnectionFactory;
-      this.sessionDescriptionCreator = this.options.sessionDescriptionCreator || SessionDescriptionCreator;
+      this.sessionDescriptionCreator = this.options.sessionDescriptionCreator || new SessionDescriptionCreator;
       this.callbacks = {};
       this.peerStore = {};
       this._setClientCallbacks();

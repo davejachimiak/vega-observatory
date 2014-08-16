@@ -12,9 +12,9 @@
 
   chai.use(sinonChai);
 
-  describe('PeerConnectionUtil', function() {
+  describe('PeerConnectionFactory', function() {
     beforeEach(function() {
-      return this.peerConnectionUtil = require('../../private/peer-connection-util.js');
+      return this.peerConnectionFactory = require('../../private/peer-connection-factory.js');
     });
     afterEach(function() {
       return sinon.collection.restore();
@@ -42,7 +42,7 @@
             throw new Error('must include peer connection config!');
           }
         };
-        return this.peerConnection = this.peerConnectionUtil.createPeerConnection(this.vegaObservatory, this.peer, peerConnectionConfig, this.pcConstructor);
+        return this.peerConnection = this.peerConnectionFactory.create(this.vegaObservatory, this.peer, peerConnectionConfig, this.pcConstructor);
       });
       it('returns an RTCPeerConnection', function() {
         return expect(this.peerConnection).to.be.instanceOf(this.pcConstructor);

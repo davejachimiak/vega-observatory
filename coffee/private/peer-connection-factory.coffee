@@ -1,5 +1,5 @@
-class PeerConnectionUtil
-  @createPeerConnection: (observatory, peer, config, pcConstructor=RTCPeerConnection) ->
+class PeerConnectionFactory
+  @create: (observatory, peer, config, pcConstructor=RTCPeerConnection) ->
     vegaClient    = observatory.vegaClient
     peerCandidate = new pcConstructor(config)
     peerId        = peer.peerId
@@ -13,6 +13,4 @@ class PeerConnectionUtil
 
     peerCandidate
 
-  @descriptionCallbacks: ->
-
-module.exports = PeerConnectionUtil
+module.exports = PeerConnectionFactory

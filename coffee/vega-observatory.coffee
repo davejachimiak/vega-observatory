@@ -3,8 +3,10 @@ VegaClient = require('vega-client')
 class VegaObservatory
   constructor: (@options) ->
     @vegaClient = new VegaClient(@options.url, @options.roomId, @options.badge)
-    @peerConnectionFactory = @options.peerConnectionFactory || PeerConnectionFactory
-    @sessionDescriptionCreator = @options.sessionDescriptionCreator || SessionDescriptionCreator
+    @peerConnectionFactory =
+      @options.peerConnectionFactory || PeerConnectionFactory
+    @sessionDescriptionCreator =
+      @options.sessionDescriptionCreator || new SessionDescriptionCreator
     @callbacks = {}
     @peerStore = {}
     @_setClientCallbacks()
