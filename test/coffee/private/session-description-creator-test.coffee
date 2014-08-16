@@ -84,3 +84,13 @@ describe 'SessionDescriptionCreator', ->
       expect(sendOffer).to.have.been.calledWith(
         @localDescription, @peerId
       )
+
+  describe '#sendAnswer', ->
+    it 'delegates to the observatory', ->
+      sendAnswer = sinon.collection.stub @observatory, 'sendAnswer'
+
+      @creator.sendAnswer()
+
+      expect(sendAnswer).to.have.been.calledWith(
+        @localDescription, @peerId
+      )

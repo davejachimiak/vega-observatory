@@ -17,7 +17,8 @@
   describe('SessionDescriptionCreator', function() {
     beforeEach(function() {
       this.observatory = {
-        sendOffer: function() {}
+        sendOffer: function() {},
+        sendAnswer: function() {}
       };
       this.peerId = 'an peer id';
       this.localDescription = {
@@ -80,12 +81,20 @@
         return expect(error).to.have.been.calledWith(errorString);
       });
     });
-    return describe('#sendOffer', function() {
+    describe('#sendOffer', function() {
       return it('delegates to the observatory', function() {
         var sendOffer;
         sendOffer = sinon.collection.stub(this.observatory, 'sendOffer');
         this.creator.sendOffer();
         return expect(sendOffer).to.have.been.calledWith(this.localDescription, this.peerId);
+      });
+    });
+    return describe('#sendAnswer', function() {
+      return it('delegates to the observatory', function() {
+        var sendAnswer;
+        sendAnswer = sinon.collection.stub(this.observatory, 'sendAnswer');
+        this.creator.sendAnswer();
+        return expect(sendAnswer).to.have.been.calledWith(this.localDescription, this.peerId);
       });
     });
   });
