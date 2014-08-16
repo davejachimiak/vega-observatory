@@ -28,29 +28,35 @@ class VegaObservatory
 
   _setClientCallbacks: ->
     @vegaClient.on 'callAccepted', (payload) =>
-      @_handleCallAccepted(payload)
+      @_handleCallAccepted payload
 
     @vegaClient.on 'offer', (payload) =>
-      peer       = new Object(payload)
-      peer.offer = null
-      peerConnection = @_addPeerToStore peer
-      @_handleSessionDescription(peerConnection, 'offer', payload)
+      @_handleOffer payload
 
     @vegaClient.on 'answer', (payload) =>
-      peerConnection = @_peerConnection(payload.peerId)
-      @_handleSessionDescription(peerConnection, 'answer', payload)
+      @_handleAnswer payload
 
     @vegaClient.on 'candidate', (payload) =>
-      @_handleCandidate(payload)
+      @_handleCandidate payload
 
     @vegaClient.on 'peerHangUp', (payload) =>
-      @_handlePeerHangUp(payload)
+      @_handlePeerHangUp payload
 
   _handleCallAccepted: (peers) ->
     peers.forEach (peer) =>
-      @_addPeerToStore(peer)
+      @_addPeerToStore peer
 
     @trigger 'callAccepted', peers
+
+  _handleOffer: (payload) ->
+    peer       = new Object(payload)
+    peer.offer = null
+    peerConnection = @_addPeerToStore peer
+    @_handleSessionDescription(peerConnection, 'offer', payload)
+
+  _handleAnswer: (payload) ->
+    peerConnection = @_peerConnection(payload.peerId)
+    @_handleSessionDescription(peerConnection, 'answer', payload)
 
   _handleSessionDescription: (peerConnection, descriptionType, payload) ->
     sessionDescription = new RTCSessionDescription(payload[descriptionType])

@@ -170,18 +170,12 @@ module.exports = require('./vega-client').VegaClient;
       })(this));
       this.vegaClient.on('offer', (function(_this) {
         return function(payload) {
-          var peer, peerConnection;
-          peer = new Object(payload);
-          peer.offer = null;
-          peerConnection = _this._addPeerToStore(peer);
-          return _this._handleSessionDescription(peerConnection, 'offer', payload);
+          return _this._handleOffer(payload);
         };
       })(this));
       this.vegaClient.on('answer', (function(_this) {
         return function(payload) {
-          var peerConnection;
-          peerConnection = _this._peerConnection(payload.peerId);
-          return _this._handleSessionDescription(peerConnection, 'answer', payload);
+          return _this._handleAnswer(payload);
         };
       })(this));
       this.vegaClient.on('candidate', (function(_this) {
@@ -203,6 +197,20 @@ module.exports = require('./vega-client').VegaClient;
         };
       })(this));
       return this.trigger('callAccepted', peers);
+    };
+
+    VegaObservatory.prototype._handleOffer = function(payload) {
+      var peer, peerConnection;
+      peer = new Object(payload);
+      peer.offer = null;
+      peerConnection = this._addPeerToStore(peer);
+      return this._handleSessionDescription(peerConnection, 'offer', payload);
+    };
+
+    VegaObservatory.prototype._handleAnswer = function(payload) {
+      var peerConnection;
+      peerConnection = this._peerConnection(payload.peerId);
+      return this._handleSessionDescription(peerConnection, 'answer', payload);
     };
 
     VegaObservatory.prototype._handleSessionDescription = function(peerConnection, descriptionType, payload) {
