@@ -4,11 +4,17 @@ describe 'VegaObservatory', ->
     class window.RTCIceCandidate
 
     @peerConnectionConfig = new Object
+    @peerConnectionFactory = create: ->
+    @sessionDescriptionCreator =
+      forOffer: ->
+      forAnswer: ->
     options =
       url: 'ws://0.0.0.0:3000'
       roomId: '/abc123'
       badge: {}
       peerConnectionConfig: @peerConnectionConfig
+      peerConnectionFactory: @peerConnectionFactory
+      sessionDescriptionCreator: @sessionDescriptionCreator
     @vegaObservatory = new VegaObservatory options
     @peerConnectionUtil = @vegaObservatory.peerConnectionUtil
     @vegaClient = @vegaObservatory.vegaClient
@@ -26,46 +32,36 @@ describe 'VegaObservatory', ->
 
   describe '#createOffer', ->
     it 'creates an offer on the peer connection with success and failure callbacks', ->
-      @peerConnection = createOffer: ->
       @peerId = 'peerId'
+      @peerConnection = new Object
       @vegaObservatory.peerStore =
         'peerId':
           badge: { name: 'Dave' }
           peerConnection: @peerConnection
-      successCallback = sinon.collection.mock()
-      errorCallback = sinon.collection.mock()
-      createOffer = sinon.collection.stub @peerConnection, 'createOffer'
-      sinon.collection.stub(@peerConnectionUtil, 'descriptionCallbacks').
-        withArgs(@vegaClient, @peerId, @peerConnection, 'offer').
-        returns [successCallback, errorCallback]
+      forOffer = sinon.collection.stub @sessionDescriptionCreator, 'forOffer'
 
       @vegaObservatory.createOffer(@peerId)
 
-      expect(createOffer).to.have.been.calledWith successCallback, errorCallback
+      expect(forOffer).to.have.been.calledWith @vegaObservatory, @peerId, @peerConnection
 
   describe '#createAnswer', ->
-    it 'creates an answer on the peer connection with success and failure callbacks', ->
-      @peerConnection = createAnswer: ->
+    it 'creates a session description for an answer', ->
       @peerId = 'peerId'
+      @peerConnection = new Object
       @vegaObservatory.peerStore =
         'peerId':
           badge: { name: 'Dave' }
           peerConnection: @peerConnection
-      successCallback = sinon.collection.mock()
-      errorCallback = sinon.collection.mock()
-      createAnswer = sinon.collection.stub @peerConnection, 'createAnswer'
-      sinon.collection.stub(@peerConnectionUtil, 'descriptionCallbacks').
-        withArgs(@vegaClient, @peerId, @peerConnection, 'answer').
-        returns [successCallback, errorCallback]
+      forAnswer = sinon.collection.stub @sessionDescriptionCreator, 'forAnswer'
 
       @vegaObservatory.createAnswer(@peerId)
 
-      expect(createAnswer).to.have.been.calledWith successCallback, errorCallback
+      expect(forAnswer).to.have.been.calledWith @vegaObservatory, @peerId, @peerConnection
 
   describe 'vega client callbacks', ->
     beforeEach ->
       @peerConnection = setRemoteDescription: ->
-      @createPeerConnection = sinon.collection.stub(@peerConnectionUtil, 'createPeerConnection')
+      @createPeerConnection = sinon.collection.stub(@peerConnectionFactory, 'create')
 
     describe 'on callAccepted', ->
       beforeEach ->

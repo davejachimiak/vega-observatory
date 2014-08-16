@@ -16,11 +16,20 @@
 
       })();
       this.peerConnectionConfig = new Object;
+      this.peerConnectionFactory = {
+        create: function() {}
+      };
+      this.sessionDescriptionCreator = {
+        forOffer: function() {},
+        forAnswer: function() {}
+      };
       options = {
         url: 'ws://0.0.0.0:3000',
         roomId: '/abc123',
         badge: {},
-        peerConnectionConfig: this.peerConnectionConfig
+        peerConnectionConfig: this.peerConnectionConfig,
+        peerConnectionFactory: this.peerConnectionFactory,
+        sessionDescriptionCreator: this.sessionDescriptionCreator
       };
       this.vegaObservatory = new VegaObservatory(options);
       this.peerConnectionUtil = this.vegaObservatory.peerConnectionUtil;
@@ -39,11 +48,9 @@
     });
     describe('#createOffer', function() {
       return it('creates an offer on the peer connection with success and failure callbacks', function() {
-        var createOffer, errorCallback, successCallback;
-        this.peerConnection = {
-          createOffer: function() {}
-        };
+        var forOffer;
         this.peerId = 'peerId';
+        this.peerConnection = new Object;
         this.vegaObservatory.peerStore = {
           'peerId': {
             badge: {
@@ -52,21 +59,16 @@
             peerConnection: this.peerConnection
           }
         };
-        successCallback = sinon.collection.mock();
-        errorCallback = sinon.collection.mock();
-        createOffer = sinon.collection.stub(this.peerConnection, 'createOffer');
-        sinon.collection.stub(this.peerConnectionUtil, 'descriptionCallbacks').withArgs(this.vegaClient, this.peerId, this.peerConnection, 'offer').returns([successCallback, errorCallback]);
+        forOffer = sinon.collection.stub(this.sessionDescriptionCreator, 'forOffer');
         this.vegaObservatory.createOffer(this.peerId);
-        return expect(createOffer).to.have.been.calledWith(successCallback, errorCallback);
+        return expect(forOffer).to.have.been.calledWith(this.vegaObservatory, this.peerId, this.peerConnection);
       });
     });
     describe('#createAnswer', function() {
-      return it('creates an answer on the peer connection with success and failure callbacks', function() {
-        var createAnswer, errorCallback, successCallback;
-        this.peerConnection = {
-          createAnswer: function() {}
-        };
+      return it('creates a session description for an answer', function() {
+        var forAnswer;
         this.peerId = 'peerId';
+        this.peerConnection = new Object;
         this.vegaObservatory.peerStore = {
           'peerId': {
             badge: {
@@ -75,12 +77,9 @@
             peerConnection: this.peerConnection
           }
         };
-        successCallback = sinon.collection.mock();
-        errorCallback = sinon.collection.mock();
-        createAnswer = sinon.collection.stub(this.peerConnection, 'createAnswer');
-        sinon.collection.stub(this.peerConnectionUtil, 'descriptionCallbacks').withArgs(this.vegaClient, this.peerId, this.peerConnection, 'answer').returns([successCallback, errorCallback]);
+        forAnswer = sinon.collection.stub(this.sessionDescriptionCreator, 'forAnswer');
         this.vegaObservatory.createAnswer(this.peerId);
-        return expect(createAnswer).to.have.been.calledWith(successCallback, errorCallback);
+        return expect(forAnswer).to.have.been.calledWith(this.vegaObservatory, this.peerId, this.peerConnection);
       });
     });
     return describe('vega client callbacks', function() {
@@ -88,7 +87,7 @@
         this.peerConnection = {
           setRemoteDescription: function() {}
         };
-        return this.createPeerConnection = sinon.collection.stub(this.peerConnectionUtil, 'createPeerConnection');
+        return this.createPeerConnection = sinon.collection.stub(this.peerConnectionFactory, 'create');
       });
       describe('on callAccepted', function() {
         beforeEach(function() {

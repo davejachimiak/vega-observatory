@@ -1,10 +1,10 @@
-VegaClient         = require('vega-client')
-PeerConnectionUtil = require('./private/peer-connection-util')
+VegaClient = require('vega-client')
 
 class VegaObservatory
   constructor: (@options) ->
     @vegaClient = new VegaClient(@options.url, @options.roomId, @options.badge)
-    @peerConnectionUtil = PeerConnectionUtil
+    @peerConnectionFactory = @options.peerConnectionFactory || PeerConnectionFactory
+    @sessionDescriptionCreator = @options.sessionDescriptionCreator || SessionDescriptionCreator
     @callbacks = {}
     @peerStore = {}
     @_setClientCallbacks()
@@ -13,20 +13,18 @@ class VegaObservatory
     @vegaClient.call()
 
   createOffer: (peerId) ->
-    peerConnection = @peerStore[peerId].peerConnection
+    peerConnection = @_peerConnection(peerId)
 
-    [successCallback, errorCallback] =
-      @peerConnectionUtil.descriptionCallbacks(@vegaClient, peerId, peerConnection, 'offer')
-
-    peerConnection.createOffer(successCallback, errorCallback)
+    @sessionDescriptionCreator.forOffer(
+      this, peerId, peerConnection
+    )
 
   createAnswer: (peerId) ->
-    peerConnection = @peerStore[peerId].peerConnection
+    peerConnection = @_peerConnection(peerId)
 
-    [successCallback, errorCallback] =
-      @peerConnectionUtil.descriptionCallbacks(@vegaClient, peerId, peerConnection, 'answer')
-
-    peerConnection.createAnswer(successCallback, errorCallback)
+    @sessionDescriptionCreator.forAnswer(
+      this, peerId, peerConnection
+    )
 
   _setClientCallbacks: ->
     @vegaClient.on 'callAccepted', (payload) =>
@@ -39,7 +37,7 @@ class VegaObservatory
       @_handleSessionDescription(peerConnection, 'offer', payload)
 
     @vegaClient.on 'answer', (payload) =>
-      peerConnection = @peerStore[payload.peerId].peerConnection
+      peerConnection = @_peerConnection(payload.peerId)
       @_handleSessionDescription(peerConnection, 'answer', payload)
 
     @vegaClient.on 'candidate', (payload) =>
@@ -62,7 +60,7 @@ class VegaObservatory
     @trigger descriptionType, payload
 
   _handleCandidate: (payload) ->
-    peerConnection = @peerStore[payload.peerId].peerConnection
+    peerConnection = @_peerConnection(payload.peerId)
     iceCandidate   = new RTCIceCandidate(payload.candidate)
 
     peerConnection.addIceCandidate(iceCandidate)
@@ -74,7 +72,7 @@ class VegaObservatory
     delete @peerStore[payload.peerId]
 
   _addPeerToStore: (peer) ->
-    peerConnection = @peerConnectionUtil.createPeerConnection(
+    peerConnection = @peerConnectionFactory.create(
       this,
       peer,
       @options.peerConnectionConfig
@@ -85,6 +83,9 @@ class VegaObservatory
       peerConnection: peerConnection
 
     peerConnection
+
+  _peerConnection: (peerId) ->
+    @peerStore[peerId].peerConnection
 
   on: (event, callback) ->
     @callbacks[event] ||= []
