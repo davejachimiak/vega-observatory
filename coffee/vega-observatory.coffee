@@ -16,6 +16,9 @@ class VegaObservatory
   call: ->
     @vegaClient.call()
 
+  sendOffer: (offer, peerId) ->
+    @vegaClient.offer(offer, peerId)
+
   createOffer: (peerId) ->
     peerConnection = @_peerConnection(peerId)
 

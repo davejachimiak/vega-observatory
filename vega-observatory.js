@@ -23,6 +23,10 @@
       return this.vegaClient.call();
     };
 
+    VegaObservatory.prototype.sendOffer = function(offer, peerId) {
+      return this.vegaClient.offer(offer, peerId);
+    };
+
     VegaObservatory.prototype.createOffer = function(peerId) {
       var peerConnection;
       peerConnection = this._peerConnection(peerId);
