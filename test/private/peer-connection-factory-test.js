@@ -22,12 +22,9 @@
     return describe('.createPeerConnection', function() {
       beforeEach(function() {
         var peerConnectionConfig;
-        this.vegaClient = {
-          candidate: function() {}
-        };
         this.vegaObservatory = {
-          vegaClient: this.vegaClient,
-          trigger: function() {}
+          trigger: function() {},
+          sendCandidate: function() {}
         };
         this.peerId = 'peerId';
         this.peer = {
@@ -48,15 +45,15 @@
         return expect(this.peerConnection).to.be.instanceOf(this.pcConstructor);
       });
       it('sends a candidate through the vega client on ice candidate', function() {
-        var candidate, event;
-        candidate = sinon.collection.stub(this.vegaClient, 'candidate');
+        var event, sendCandidate;
+        sendCandidate = sinon.collection.stub(this.vegaObservatory, 'sendCandidate');
         event = {
           candidate: {
             cool: 'stuff'
           }
         };
         this.peerConnection.onicecandidate(event);
-        return expect(candidate).to.have.been.calledWith(event.candidate, this.peerId);
+        return expect(sendCandidate).to.have.been.calledWith(event.candidate, this.peerId);
       });
       return it('triggers a remoteStreamAdded event on the observatory when a stream is added', function() {
         var event, trigger;

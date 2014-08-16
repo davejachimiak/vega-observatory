@@ -6,17 +6,16 @@
     function PeerConnectionFactory() {}
 
     PeerConnectionFactory.create = function(observatory, peer, config, pcConstructor) {
-      var peerCandidate, peerId, vegaClient;
+      var peerCandidate, peerId;
       if (pcConstructor == null) {
         pcConstructor = RTCPeerConnection;
       }
-      vegaClient = observatory.vegaClient;
       peerCandidate = new pcConstructor(config);
       peerId = peer.peerId;
       peerCandidate.onicecandidate = function(event) {
         var candidate;
         if (candidate = event.candidate) {
-          return vegaClient.candidate(candidate, peerId);
+          return observatory.sendCandidate(candidate, peerId);
         }
       };
       peerCandidate.onaddstream = function(event) {
