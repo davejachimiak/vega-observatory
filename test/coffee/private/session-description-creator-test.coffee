@@ -13,6 +13,7 @@ describe 'SessionDescriptionCreator', ->
     @peerId         = 'an peer id'
     @peerConnection =
       createOffer: ->
+      createAnswer: ->
 
     @creator = new SessionDescriptionCreator(
       @observatory, @peerId, @peerConnection
@@ -21,14 +22,28 @@ describe 'SessionDescriptionCreator', ->
   afterEach ->
     sinon.collection.restore()
 
-  describe '#forOffer', ->
-    it 'creates an offer on the peer connection', ->
-      failureCallback = @creator.failureCallback
-      sinon.collection.stub(@creator, 'successCallback').
-        withArgs(@creator.sendOffer).
-        returns successCallback = new Object
-      createOffer = sinon.collection.stub @peerConnection, 'createOffer'
+  describe 'main public behavior', ->
+    beforeEach ->
+      @failureCallback = @creator.failureCallback
+      @stubSuccessCallback = (arg) =>
+        sinon.collection.stub(@creator, 'successCallback').
+          withArgs(arg).
+          returns @successCallback = new Object
 
-      @creator.forOffer()
+    describe '#forOffer', ->
+      it 'creates an offer on the peer connection', ->
+        @stubSuccessCallback @creator.sendOffer
+        createOffer = sinon.collection.stub @peerConnection, 'createOffer'
 
-      expect(createOffer).to.have.been.calledWith successCallback, failureCallback
+        @creator.forOffer()
+
+        expect(createOffer).to.have.been.calledWith @successCallback, @failureCallback
+
+    describe '#forAnswer', ->
+      it 'creates an answer on the peer connection', ->
+        @stubSuccessCallback @creator.sendAnswer
+        createAnswer = sinon.collection.stub @peerConnection, 'createAnswer'
+
+        @creator.forAnswer()
+
+        expect(createAnswer).to.have.been.calledWith @successCallback, @failureCallback

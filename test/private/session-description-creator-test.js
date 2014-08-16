@@ -19,21 +19,40 @@
       this.observatory = new Object;
       this.peerId = 'an peer id';
       this.peerConnection = {
-        createOffer: function() {}
+        createOffer: function() {},
+        createAnswer: function() {}
       };
       return this.creator = new SessionDescriptionCreator(this.observatory, this.peerId, this.peerConnection);
     });
     afterEach(function() {
       return sinon.collection.restore();
     });
-    return describe('#forOffer', function() {
-      return it('creates an offer on the peer connection', function() {
-        var createOffer, failureCallback, successCallback;
-        failureCallback = this.creator.failureCallback;
-        sinon.collection.stub(this.creator, 'successCallback').withArgs(this.creator.sendOffer).returns(successCallback = new Object);
-        createOffer = sinon.collection.stub(this.peerConnection, 'createOffer');
-        this.creator.forOffer();
-        return expect(createOffer).to.have.been.calledWith(successCallback, failureCallback);
+    return describe('main public behavior', function() {
+      beforeEach(function() {
+        this.failureCallback = this.creator.failureCallback;
+        return this.stubSuccessCallback = (function(_this) {
+          return function(arg) {
+            return sinon.collection.stub(_this.creator, 'successCallback').withArgs(arg).returns(_this.successCallback = new Object);
+          };
+        })(this);
+      });
+      describe('#forOffer', function() {
+        return it('creates an offer on the peer connection', function() {
+          var createOffer;
+          this.stubSuccessCallback(this.creator.sendOffer);
+          createOffer = sinon.collection.stub(this.peerConnection, 'createOffer');
+          this.creator.forOffer();
+          return expect(createOffer).to.have.been.calledWith(this.successCallback, this.failureCallback);
+        });
+      });
+      return describe('#forAnswer', function() {
+        return it('creates an answer on the peer connection', function() {
+          var createAnswer;
+          this.stubSuccessCallback(this.creator.sendAnswer);
+          createAnswer = sinon.collection.stub(this.peerConnection, 'createAnswer');
+          this.creator.forAnswer();
+          return expect(createAnswer).to.have.been.calledWith(this.successCallback, this.failureCallback);
+        });
       });
     });
   });
