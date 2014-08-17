@@ -23,10 +23,18 @@
         forOffer: function() {},
         forAnswer: function() {}
       };
+      this.webRTCInterop = {
+        infectGlobal: (function(_this) {
+          return function() {
+            return _this.webRTCInteropEngaged = true;
+          };
+        })(this)
+      };
       options = {
         url: 'ws://0.0.0.0:3000',
         roomId: '/abc123',
         badge: {},
+        webRTCInterop: this.webRTCInterop,
         peerConnectionConfig: this.peerConnectionConfig,
         peerConnectionFactory: this.peerConnectionFactory,
         sessionDescriptionCreator: this.sessionDescriptionCreator
@@ -36,6 +44,9 @@
     });
     afterEach(function() {
       return sinon.collection.restore();
+    });
+    it('infects the w3c global names with vendor prefixes for interoperability', function() {
+      return expect(this.webRTCInteropEngaged).to.be["true"];
     });
     describe('#call', function() {
       return it('delegates to the vega client', function() {

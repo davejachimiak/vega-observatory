@@ -8,10 +8,14 @@ describe 'VegaObservatory', ->
     @sessionDescriptionCreator =
       forOffer: ->
       forAnswer: ->
+    @webRTCInterop =
+      infectGlobal: =>
+        @webRTCInteropEngaged = true
     options =
       url: 'ws://0.0.0.0:3000'
       roomId: '/abc123'
       badge: {}
+      webRTCInterop: @webRTCInterop
       peerConnectionConfig: @peerConnectionConfig
       peerConnectionFactory: @peerConnectionFactory
       sessionDescriptionCreator: @sessionDescriptionCreator
@@ -20,6 +24,9 @@ describe 'VegaObservatory', ->
 
   afterEach ->
     sinon.collection.restore()
+
+  it 'infects the w3c global names with vendor prefixes for interoperability', ->
+    expect(@webRTCInteropEngaged).to.be.true
 
   describe '#call', ->
     it 'delegates to the vega client', ->

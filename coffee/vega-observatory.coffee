@@ -1,6 +1,7 @@
 VegaClient = require('vega-client')
 PeerConnectionFactory = require('./private/peer-connection-factory')
 SessionDescriptionCreator = require('./private/session-description-creator')
+WebRTCInterop = require('../webrtc-interop/webrtc-interop.js')
 
 class VegaObservatory
   constructor: (@options) ->
@@ -9,8 +10,11 @@ class VegaObservatory
       @options.peerConnectionFactory || PeerConnectionFactory
     @sessionDescriptionCreator =
       @options.sessionDescriptionCreator || SessionDescriptionCreator
+    @webRTCInterop = @options.webRTCInterop || WebRTCInterop
     @callbacks = {}
     @peerStore = {}
+
+    @webRTCInterop.infectGlobal()
     @_setClientCallbacks()
 
   call: ->
