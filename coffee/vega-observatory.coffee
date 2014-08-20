@@ -1,6 +1,7 @@
 VegaClient = require('vega-client')
 PeerConnectionFactory = require('./private/peer-connection-factory')
 SessionDescriptionCreator = require('./private/session-description-creator')
+PeerStore = require('./private/peer-store')
 WebRTCInterop = require('../webrtc-interop/webrtc-interop.js')
 
 class VegaObservatory
@@ -12,7 +13,7 @@ class VegaObservatory
       @options.sessionDescriptionCreator || SessionDescriptionCreator
     @webRTCInterop = @options.webRTCInterop || WebRTCInterop
     @callbacks = {}
-    @peerStore = {}
+    @peerStore = @options.peerStore || new PeerStore
 
     @webRTCInterop.infectGlobal()
     @_setClientCallbacks()
@@ -70,8 +71,8 @@ class VegaObservatory
 
   _handleOffer: (payload) ->
     peer       = new Object(payload)
-    peer.offer = null
-    peerConnection = @_addPeerToStore peer
+    peer.offer = undefined
+    peerConnection = @_addPeerToStore payload
     @_handleSessionDescription(peerConnection, 'offer', payload)
 
   _handleAnswer: (payload) ->
@@ -104,14 +105,14 @@ class VegaObservatory
       @options.peerConnectionConfig
     )
 
-    @peerStore[peer.peerId] =
-      badge: peer.badge
-      peerConnection: peerConnection
+    peer.peerConnection = peerConnection
+
+    @peerStore.add peer
 
     peerConnection
 
   _peerConnection: (peerId) ->
-    @peerStore[peerId].peerConnection
+    @peerStore.find(peerId).peerConnection
 
   on: (event, callback) ->
     @callbacks[event] ||= []

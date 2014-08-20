@@ -5,13 +5,77 @@
   PeerStore = (function() {
     function PeerStore() {}
 
-    PeerStore.prototype.peers = [];
-
     PeerStore.prototype.callbacks = {};
+
+    PeerStore.prototype.peers = [];
 
     PeerStore.prototype.add = function(peer) {
       this.peers.push(peer);
       return this.trigger('add', peer);
+    };
+
+    PeerStore.prototype.addStream = function(peerId, stream) {
+      var thePeer;
+      thePeer = null;
+      this.peers.forEach(function(peer) {
+        if (peer.peerId === peerId) {
+          return thePeer = peer;
+        }
+      });
+      thePeer.stream = stream;
+      return this.trigger('streamAdded', thePeer);
+    };
+
+    PeerStore.prototype.remove = function(peerId) {
+      var newPeers, removedPeer;
+      removedPeer = null;
+      newPeers = [];
+      this.peers.forEach(function(peer) {
+        if (peer.peerId === peerId) {
+          return removedPeer = peer;
+        } else {
+          return newPeers.push(peer);
+        }
+      });
+      this.peers = newPeers;
+      return this.trigger('remove', removedPeer);
+    };
+
+    PeerStore.prototype.find = function(peerId) {
+      var foundPeer;
+      foundPeer = void 0;
+      this.peers.forEach(function(peer) {
+        if (peer.peerId === peerId) {
+          return foundPeer = peer;
+        }
+      });
+      return foundPeer;
+    };
+
+    PeerStore.prototype.peersWithStreams = function() {
+      var peersWithStreams;
+      peersWithStreams = [];
+      this.peers.forEach((function(_this) {
+        return function(peer) {
+          if (_this._hasStream(peer)) {
+            return peersWithStreams.push(peer);
+          }
+        };
+      })(this));
+      return peersWithStreams;
+    };
+
+    PeerStore.prototype.peersWithoutStreams = function() {
+      var peersWithoutStreams;
+      peersWithoutStreams = [];
+      this.peers.forEach((function(_this) {
+        return function(peer) {
+          if (!_this._hasStream(peer)) {
+            return peersWithoutStreams.push(peer);
+          }
+        };
+      })(this));
+      return peersWithoutStreams;
     };
 
     PeerStore.prototype.on = function(event, callback) {
@@ -28,6 +92,10 @@
           return callback.apply(this, args);
         });
       }
+    };
+
+    PeerStore.prototype._hasStream = function(peer) {
+      return !!peer.stream;
     };
 
     return PeerStore;

@@ -4,7 +4,8 @@
   "license": "MIT",
   "main":"index.js",
   "dependencies": {
-    "vega-client":"~0.1"
+    "vega-client":"~0.1",
+    "underscore":"~1.6"
   },
   "devDependencies": {
     "coffee-script":"1.7.1",
