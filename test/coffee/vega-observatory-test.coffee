@@ -278,15 +278,15 @@ describe 'VegaObservatory', ->
       beforeEach ->
         @badge = { name: 'Dave' }
         @peerId = 'peerId'
-        @vegaObservatory.peerStore =
-          'peerId':
-            badge: @badge
-            peerConnection: @peerConnection
+        @peer =
+          peerId: @peerId
+          badge: @badge
+          peerConnection: @peerConnection
 
         @payload =
           peerId: @peerId
 
-      xit 'triggers a peerHangUp event', ->
+      it 'triggers a peerHangUp event', ->
         object = {}
 
         @vegaObservatory.on 'peerHangUp', (payload) ->
@@ -296,7 +296,9 @@ describe 'VegaObservatory', ->
 
         expect(object.payload).to.eq @payload
 
-      xit 'removes the peer from the peer store', ->
+      it 'removes the peer from the peer store', ->
+        remove = sinon.collection.stub(@peerStore, 'remove')
+
         @vegaClient.trigger 'peerHangUp', @payload
 
-        expect(@vegaObservatory.peerStore).to.eql {}
+        expect(remove).to.have.been.calledWith @peerId

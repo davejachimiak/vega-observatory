@@ -309,17 +309,16 @@
             name: 'Dave'
           };
           this.peerId = 'peerId';
-          this.vegaObservatory.peerStore = {
-            'peerId': {
-              badge: this.badge,
-              peerConnection: this.peerConnection
-            }
+          this.peer = {
+            peerId: this.peerId,
+            badge: this.badge,
+            peerConnection: this.peerConnection
           };
           return this.payload = {
             peerId: this.peerId
           };
         });
-        xit('triggers a peerHangUp event', function() {
+        it('triggers a peerHangUp event', function() {
           var object;
           object = {};
           this.vegaObservatory.on('peerHangUp', function(payload) {
@@ -328,9 +327,11 @@
           this.vegaClient.trigger('peerHangUp', this.payload);
           return expect(object.payload).to.eq(this.payload);
         });
-        return xit('removes the peer from the peer store', function() {
+        return it('removes the peer from the peer store', function() {
+          var remove;
+          remove = sinon.collection.stub(this.peerStore, 'remove');
           this.vegaClient.trigger('peerHangUp', this.payload);
-          return expect(this.vegaObservatory.peerStore).to.eql({});
+          return expect(remove).to.have.been.calledWith(this.peerId);
         });
       });
     });

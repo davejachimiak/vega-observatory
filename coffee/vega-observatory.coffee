@@ -96,7 +96,7 @@ class VegaObservatory
 
   _handlePeerHangUp: (payload) ->
     @trigger 'peerHangUp', payload
-    delete @peerStore[payload.peerId]
+    @peerStore.remove(payload.peerId)
 
   _addPeerToStore: (peer) ->
     peerConnection = @peerConnectionFactory.create(

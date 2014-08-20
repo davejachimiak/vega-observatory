@@ -460,7 +460,7 @@ module.exports = require('./vega-client').VegaClient;
 
     VegaObservatory.prototype._handlePeerHangUp = function(payload) {
       this.trigger('peerHangUp', payload);
-      return delete this.peerStore[payload.peerId];
+      return this.peerStore.remove(payload.peerId);
     };
 
     VegaObservatory.prototype._addPeerToStore = function(peer) {
