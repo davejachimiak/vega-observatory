@@ -137,7 +137,11 @@
     };
 
     VegaObservatory.prototype._peerConnection = function(peerId) {
-      return this.peerStore.find(peerId).peerConnection;
+      return this._findPeer(peerId).peerConnection;
+    };
+
+    VegaObservatory.prototype._findPeer = function(peerId) {
+      return this.peerStore.find(peerId);
     };
 
     VegaObservatory.prototype.on = function(event, callback) {

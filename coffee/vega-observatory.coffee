@@ -112,7 +112,10 @@ class VegaObservatory
     peerConnection
 
   _peerConnection: (peerId) ->
-    @peerStore.find(peerId).peerConnection
+    @_findPeer(peerId).peerConnection
+
+  _findPeer: (peerId) ->
+    @peerStore.find(peerId)
 
   on: (event, callback) ->
     @callbacks[event] ||= []
