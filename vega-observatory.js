@@ -132,7 +132,6 @@
       var peerConnection;
       peerConnection = this.peerConnectionFactory.create(this, peer, this.options.peerConnectionConfig);
       peer.peerConnection = peerConnection;
-      console.log(peer);
       this.peerStore.add(peer);
       return peerConnection;
     };

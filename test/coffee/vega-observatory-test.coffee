@@ -202,28 +202,31 @@ describe 'VegaObservatory', ->
     describe 'on answer', ->
       beforeEach ->
         @peerId = 'peerId'
-        @peerConnection = setRemoteDescription: ->
         @badge = { name: 'Dave' }
-        @vegaObservatory.peerStore =
-          'peerId':
-            badge: @badge
-            peerConnection: @peerConnection
-
-        @payload =
-          answer: { an: 'answer' }
+        @peer =
           peerId: @peerId
+          badge: @badge
+          peerConnection: @peerConnection
+
+        sinon.collection.stub(@peerStore, 'find').
+          withArgs(@peerId).
+          returns @peer
 
         @setRemoteDescription =
           sinon.collection.stub @peerConnection, 'setRemoteDescription'
 
         @rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription)
 
-      xit 'sets the answer on the peer connection via session description', ->
+        @payload =
+          answer: { an: 'answer' }
+          peerId: @peerId
+
+      it 'sets the answer on the peer connection via session description', ->
         @vegaClient.trigger('answer', @payload)
 
         expect(@setRemoteDescription).to.have.been.calledWith @rtcSessionDescription
 
-      xit 'triggers an answer event', ->
+      it 'triggers an answer event', ->
         object = {}
 
         @vegaObservatory.on 'answer', (payload) ->

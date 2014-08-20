@@ -211,7 +211,7 @@
           add = sinon.collection.spy(this.peerStore, 'add');
           this.vegaClient.trigger('offer', this.payload);
           return expect(add).to.have.been.calledWithMatch({
-            peerId: 'poop',
+            peerId: this.peerId,
             badge: this.badge,
             peerConnection: this.peerConnection
           });
@@ -233,32 +233,29 @@
       describe('on answer', function() {
         beforeEach(function() {
           this.peerId = 'peerId';
-          this.peerConnection = {
-            setRemoteDescription: function() {}
-          };
           this.badge = {
             name: 'Dave'
           };
-          this.vegaObservatory.peerStore = {
-            'peerId': {
-              badge: this.badge,
-              peerConnection: this.peerConnection
-            }
+          this.peer = {
+            peerId: this.peerId,
+            badge: this.badge,
+            peerConnection: this.peerConnection
           };
-          this.payload = {
+          sinon.collection.stub(this.peerStore, 'find').withArgs(this.peerId).returns(this.peer);
+          this.setRemoteDescription = sinon.collection.stub(this.peerConnection, 'setRemoteDescription');
+          this.rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription);
+          return this.payload = {
             answer: {
               an: 'answer'
             },
             peerId: this.peerId
           };
-          this.setRemoteDescription = sinon.collection.stub(this.peerConnection, 'setRemoteDescription');
-          return this.rtcSessionDescription = sinon.createStubInstance(window.RTCSessionDescription);
         });
-        xit('sets the answer on the peer connection via session description', function() {
+        it('sets the answer on the peer connection via session description', function() {
           this.vegaClient.trigger('answer', this.payload);
           return expect(this.setRemoteDescription).to.have.been.calledWith(this.rtcSessionDescription);
         });
-        return xit('triggers an answer event', function() {
+        return it('triggers an answer event', function() {
           var object;
           object = {};
           this.vegaObservatory.on('answer', function(payload) {
