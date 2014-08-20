@@ -241,26 +241,30 @@ describe 'VegaObservatory', ->
         @peerConnection = addIceCandidate: ->
         @badge = { name: 'Dave' }
         @peerId = 'peerId'
-        @vegaObservatory.peerStore =
-          'peerId':
-            badge: @badge
-            peerConnection: @peerConnection
-
-        @payload =
-          candidate: { an: 'candidate' }
+        @peer =
           peerId: @peerId
+          badge: @badge
+          peerConnection: @peerConnection
+
+        sinon.collection.stub(@peerStore, 'find').
+          withArgs(@peerId).
+          returns @peer
 
         @addIceCandidate =
           sinon.collection.stub @peerConnection, 'addIceCandidate'
 
         @rtcIceCandidate = sinon.createStubInstance(window.RTCIceCandidate)
 
-      xit 'adds the ice candidate to the proper peer connection', ->
+        @payload =
+          candidate: { an: 'candidate' }
+          peerId: @peerId
+
+      it 'adds the ice candidate to the proper peer connection', ->
         @vegaClient.trigger 'candidate', @payload
 
         expect(@addIceCandidate).to.have.been.calledWith @rtcIceCandidate
 
-      xit 'triggers a candidate event with the payload', ->
+      it 'triggers a candidate event with the payload', ->
         object = {}
 
         @vegaObservatory.on 'candidate', (payload) ->

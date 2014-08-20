@@ -274,26 +274,26 @@
             name: 'Dave'
           };
           this.peerId = 'peerId';
-          this.vegaObservatory.peerStore = {
-            'peerId': {
-              badge: this.badge,
-              peerConnection: this.peerConnection
-            }
+          this.peer = {
+            peerId: this.peerId,
+            badge: this.badge,
+            peerConnection: this.peerConnection
           };
-          this.payload = {
+          sinon.collection.stub(this.peerStore, 'find').withArgs(this.peerId).returns(this.peer);
+          this.addIceCandidate = sinon.collection.stub(this.peerConnection, 'addIceCandidate');
+          this.rtcIceCandidate = sinon.createStubInstance(window.RTCIceCandidate);
+          return this.payload = {
             candidate: {
               an: 'candidate'
             },
             peerId: this.peerId
           };
-          this.addIceCandidate = sinon.collection.stub(this.peerConnection, 'addIceCandidate');
-          return this.rtcIceCandidate = sinon.createStubInstance(window.RTCIceCandidate);
         });
-        xit('adds the ice candidate to the proper peer connection', function() {
+        it('adds the ice candidate to the proper peer connection', function() {
           this.vegaClient.trigger('candidate', this.payload);
           return expect(this.addIceCandidate).to.have.been.calledWith(this.rtcIceCandidate);
         });
-        return xit('triggers a candidate event with the payload', function() {
+        return it('triggers a candidate event with the payload', function() {
           var object;
           object = {};
           this.vegaObservatory.on('candidate', function(payload) {
