@@ -11,16 +11,25 @@
       return this.peerStore = new PeerStore;
     });
     describe('#add', function() {
-      return it('adds a peer to the stores', function() {
-        var peer;
-        peer = new Object;
-        this.peerStore.add(peer);
-        return expect(this.peerStore.peers).to.eql([peer]);
+      beforeEach(function() {
+        return this.peer = new Object;
+      });
+      it('adds a peer to the stores', function() {
+        this.peerStore.add(this.peer);
+        return expect(this.peerStore.peers).to.eql([this.peer]);
+      });
+      return it('triggers an add event', function() {
+        this.peerStore.on('add', (function(_this) {
+          return function(peer) {
+            return _this.thePeer = peer;
+          };
+        })(this));
+        this.peerStore.add(this.peer);
+        return expect(this.thePeer).to.eq(this.peer);
       });
     });
     describe('#remove', function() {});
     describe('#addStream', function() {});
-    describe('#on', function() {});
     describe('#withStream', function() {});
     return describe('#withoutStream', function() {});
   });

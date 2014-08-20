@@ -7,8 +7,27 @@
 
     PeerStore.prototype.peers = [];
 
+    PeerStore.prototype.callbacks = {};
+
     PeerStore.prototype.add = function(peer) {
-      return this.peers.push(peer);
+      this.peers.push(peer);
+      return this.trigger('add', peer);
+    };
+
+    PeerStore.prototype.on = function(event, callback) {
+      var _base;
+      (_base = this.callbacks)[event] || (_base[event] = []);
+      return this.callbacks[event].push(callback);
+    };
+
+    PeerStore.prototype.trigger = function(event) {
+      var args, callbacks;
+      args = Array.prototype.slice.call(arguments, 1);
+      if (callbacks = this.callbacks[event]) {
+        return callbacks.forEach(function(callback) {
+          return callback.apply(this, args);
+        });
+      }
     };
 
     return PeerStore;
