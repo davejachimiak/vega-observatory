@@ -11,9 +11,7 @@
       return this.peerStore = new PeerStore;
     });
     afterEach(function() {
-      if (this.thePeer) {
-        delete this.thePeer;
-      }
+      delete this.thePeer;
       return this.peerStore.peers = [];
     });
     describe('#add', function() {

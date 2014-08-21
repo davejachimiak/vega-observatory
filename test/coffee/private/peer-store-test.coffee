@@ -7,7 +7,7 @@ describe 'PeerStore', ->
     @peerStore = new PeerStore
 
   afterEach ->
-    delete @thePeer if @thePeer
+    delete @thePeer
     @peerStore.peers = []
 
   describe '#add', ->
