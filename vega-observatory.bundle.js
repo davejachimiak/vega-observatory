@@ -137,22 +137,24 @@ module.exports = require('./vega-observatory.js')
     function PeerConnectionFactory() {}
 
     PeerConnectionFactory.create = function(observatory, peer, config, pcConstructor) {
-      var peerCandidate, peerId;
+      var localStream, peerConnection, peerId;
       if (pcConstructor == null) {
         pcConstructor = RTCPeerConnection;
       }
-      peerCandidate = new pcConstructor(config);
+      peerConnection = new pcConstructor(config);
+      localStream = observatory.localStream;
       peerId = peer.peerId;
-      peerCandidate.onicecandidate = function(event) {
+      peerConnection.addStream(localStream);
+      peerConnection.onicecandidate = function(event) {
         var candidate;
         if (candidate = event.candidate) {
           return observatory.sendCandidate(candidate, peerId);
         }
       };
-      peerCandidate.onaddstream = function(event) {
+      peerConnection.onaddstream = function(event) {
         return observatory.addStream(peerId, event.stream);
       };
-      return peerCandidate;
+      return peerConnection;
     };
 
     return PeerConnectionFactory;
@@ -366,6 +368,7 @@ module.exports = require('./vega-observatory.js')
       this.webRTCInterop = this.options.webRTCInterop || WebRTCInterop;
       this.callbacks = {};
       this.peerStore = this.options.peerStore || new PeerStore;
+      this.localStream = this.options.localStream;
       this.webRTCInterop.infectGlobal();
       this._setClientCallbacks();
     }

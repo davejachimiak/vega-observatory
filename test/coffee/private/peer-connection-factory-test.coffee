@@ -13,19 +13,24 @@ describe 'PeerConnectionFactory', ->
         trigger: ->
         sendCandidate: ->
         addStream: ->
+        localStream: @localStream = new Object
       @peerId = 'peerId'
       @peer =
         peerId: @peerId
         badge: { name: 'Dave' }
       peerConnectionConfig = {}
-      @pcConstructor = (arg) ->
+
+      @pcConstructor = (arg) =>
         unless arg is peerConnectionConfig
           throw new Error 'must include peer connection config!'
 
+        addStream: (stream) =>
+          @streamAdded = stream
+
       @peerConnection = @peerConnectionFactory.create(@vegaObservatory, @peer, peerConnectionConfig, @pcConstructor)
 
-    it 'returns an RTCPeerConnection', ->
-      expect(@peerConnection).to.be.instanceOf @pcConstructor
+    it 'adds the local stream', ->
+      expect(@streamAdded).to.eq @localStream
 
     it 'sends a candidate through the vega client on ice candidate', ->
       sendCandidate = sinon.collection.stub @vegaObservatory, 'sendCandidate'

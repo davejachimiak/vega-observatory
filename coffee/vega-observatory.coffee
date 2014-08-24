@@ -14,6 +14,7 @@ class VegaObservatory
     @webRTCInterop = @options.webRTCInterop || WebRTCInterop
     @callbacks = {}
     @peerStore = @options.peerStore || new PeerStore
+    @localStream = @options.localStream
 
     @webRTCInterop.infectGlobal()
     @_setClientCallbacks()

@@ -15,7 +15,8 @@
         this.vegaObservatory = {
           trigger: function() {},
           sendCandidate: function() {},
-          addStream: function() {}
+          addStream: function() {},
+          localStream: this.localStream = new Object
         };
         this.peerId = 'peerId';
         this.peer = {
@@ -25,15 +26,22 @@
           }
         };
         peerConnectionConfig = {};
-        this.pcConstructor = function(arg) {
-          if (arg !== peerConnectionConfig) {
-            throw new Error('must include peer connection config!');
-          }
-        };
+        this.pcConstructor = (function(_this) {
+          return function(arg) {
+            if (arg !== peerConnectionConfig) {
+              throw new Error('must include peer connection config!');
+            }
+            return {
+              addStream: function(stream) {
+                return _this.streamAdded = stream;
+              }
+            };
+          };
+        })(this);
         return this.peerConnection = this.peerConnectionFactory.create(this.vegaObservatory, this.peer, peerConnectionConfig, this.pcConstructor);
       });
-      it('returns an RTCPeerConnection', function() {
-        return expect(this.peerConnection).to.be.instanceOf(this.pcConstructor);
+      it('adds the local stream', function() {
+        return expect(this.streamAdded).to.eq(this.localStream);
       });
       it('sends a candidate through the vega client on ice candidate', function() {
         var event, sendCandidate;

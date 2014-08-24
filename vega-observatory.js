@@ -21,6 +21,7 @@
       this.webRTCInterop = this.options.webRTCInterop || WebRTCInterop;
       this.callbacks = {};
       this.peerStore = this.options.peerStore || new PeerStore;
+      this.localStream = this.options.localStream;
       this.webRTCInterop.infectGlobal();
       this._setClientCallbacks();
     }

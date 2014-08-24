@@ -1,15 +1,18 @@
 class PeerConnectionFactory
   @create: (observatory, peer, config, pcConstructor=RTCPeerConnection) ->
-    peerCandidate = new pcConstructor(config)
-    peerId        = peer.peerId
+    peerConnection = new pcConstructor(config)
+    localStream    = observatory.localStream
+    peerId         = peer.peerId
 
-    peerCandidate.onicecandidate = (event) ->
+    peerConnection.addStream localStream
+
+    peerConnection.onicecandidate = (event) ->
       if candidate = event.candidate
         observatory.sendCandidate(candidate, peerId)
 
-    peerCandidate.onaddstream = (event) ->
+    peerConnection.onaddstream = (event) ->
       observatory.addStream peerId, event.stream
 
-    peerCandidate
+    peerConnection
 
 module.exports = PeerConnectionFactory
