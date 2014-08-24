@@ -124,6 +124,15 @@ describe 'VegaObservatory', ->
 
       expect(oN).to.have.been.calledWith 'streamAdded', f
 
+  describe '#onPeerRemoved', ->
+    it 'sets a callback on the remove event on the store', ->
+      oN = sinon.collection.stub @peerStore, 'on'
+      f = ->
+
+      @vegaObservatory.onPeerRemoved(f)
+
+      expect(oN).to.have.been.calledWith 'remove', f
+
   describe 'vega client callbacks', ->
     beforeEach ->
       @peerConnection =

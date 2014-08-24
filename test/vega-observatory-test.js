@@ -147,6 +147,15 @@
         return expect(oN).to.have.been.calledWith('streamAdded', f);
       });
     });
+    describe('#onPeerRemoved', function() {
+      return it('sets a callback on the remove event on the store', function() {
+        var f, oN;
+        oN = sinon.collection.stub(this.peerStore, 'on');
+        f = function() {};
+        this.vegaObservatory.onPeerRemoved(f);
+        return expect(oN).to.have.been.calledWith('remove', f);
+      });
+    });
     return describe('vega client callbacks', function() {
       beforeEach(function() {
         this.peerConnection = {
