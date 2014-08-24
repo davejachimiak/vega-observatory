@@ -26,10 +26,10 @@ class SessionDescriptionCreator
   failureCallback: (error) ->
     console.error error
 
-  sendOffer: ->
+  sendOffer: =>
     @observatory.sendOffer(@peerConnection.localDescription, @peerId)
 
-  sendAnswer: ->
+  sendAnswer: =>
     @observatory.sendAnswer(@peerConnection.localDescription, @peerId)
 
 module.exports = SessionDescriptionCreator
