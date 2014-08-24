@@ -3,11 +3,14 @@
   var PeerStore;
 
   PeerStore = (function() {
-    function PeerStore() {}
-
     PeerStore.prototype.callbacks = {};
 
     PeerStore.prototype.peers = [];
+
+    function PeerStore(options) {
+      this.options = options;
+      this.URL = this.options.URL || global.URL;
+    }
 
     PeerStore.prototype.add = function(peer) {
       this.peers.push(peer);
@@ -15,41 +18,42 @@
     };
 
     PeerStore.prototype.addStream = function(peerId, stream) {
-      var thePeer;
-      thePeer = null;
-      this.peers.forEach(function(peer) {
-        if (peer.peerId === peerId) {
-          return thePeer = peer;
+      var peer;
+      peer = void 0;
+      this.peers.forEach(function(p) {
+        if (p.peerId === peerId) {
+          return peer = p;
         }
       });
-      thePeer.stream = stream;
-      return this.trigger('streamAdded', thePeer);
+      peer.stream = stream;
+      peer.streamUrl = this.URL.createObjectURL(stream);
+      return this.trigger('streamAdded', peer);
     };
 
     PeerStore.prototype.remove = function(peerId) {
-      var newPeers, removedPeer;
-      removedPeer = null;
-      newPeers = [];
+      var peers, removedPeer;
+      removedPeer = void 0;
+      peers = [];
       this.peers.forEach(function(peer) {
         if (peer.peerId === peerId) {
           return removedPeer = peer;
         } else {
-          return newPeers.push(peer);
+          return peers.push(peer);
         }
       });
-      this.peers = newPeers;
+      this.peers = peers;
       return this.trigger('remove', removedPeer);
     };
 
     PeerStore.prototype.find = function(peerId) {
-      var foundPeer;
-      foundPeer = void 0;
-      this.peers.forEach(function(peer) {
-        if (peer.peerId === peerId) {
-          return foundPeer = peer;
+      var peer;
+      peer = void 0;
+      this.peers.forEach(function(p) {
+        if (p.peerId === peerId) {
+          return peer = p;
         }
       });
-      return foundPeer;
+      return peer;
     };
 
     PeerStore.prototype.peersWithStreams = function() {

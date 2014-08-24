@@ -4,7 +4,9 @@ PeerStore = require('../../private/peer-store')
 
 describe 'PeerStore', ->
   beforeEach ->
+    @URL = createObjectURL: ->
     @peerStore = new PeerStore
+      URL: @URL
 
   afterEach ->
     delete @thePeer
@@ -52,13 +54,21 @@ describe 'PeerStore', ->
       @peer = { peerId: @peerId }
       @peerStore.peers = [@peer]
       @stream = new Object
+      @streamUrl = 'abc123'
+
+      sinon.collection.stub(@URL, 'createObjectURL').
+        withArgs(@stream).
+        returns @streamUrl
 
     it 'attaches the stream to the peer of the id', ->
       @peerStore.addStream(@peerId, @stream)
 
       expect(@peer.stream).to.eq @stream
 
-      @peerStore.peers = []
+    it 'adds a streamUrl to peer', ->
+      @peerStore.addStream(@peerId, @stream)
+
+      expect(@peer.streamUrl).to.eq @streamUrl
 
     it 'triggers a streamAdded event', ->
       @peerStore.on 'streamAdded', (peer) =>

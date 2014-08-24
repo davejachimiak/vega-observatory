@@ -2,41 +2,45 @@ class PeerStore
   callbacks: {}
   peers: []
 
+  constructor: (@options) ->
+    @URL = @options.URL || global.URL
+
   add: (peer) ->
     @peers.push peer
     @trigger 'add', peer
 
   addStream: (peerId, stream) ->
-    thePeer = null
+    peer = undefined
 
-    @peers.forEach (peer) ->
-      return thePeer = peer if peer.peerId is peerId
+    @peers.forEach (p) ->
+      return peer = p if p.peerId is peerId
 
-    thePeer.stream = stream
+    peer.stream = stream
+    peer.streamUrl = @URL.createObjectURL(stream)
 
-    @trigger 'streamAdded', thePeer
+    @trigger 'streamAdded', peer
 
   remove: (peerId) ->
-    removedPeer = null
-    newPeers    = []
+    removedPeer = undefined
+    peers       = []
     
     @peers.forEach (peer) ->
       if peer.peerId is peerId
         removedPeer = peer
       else
-        newPeers.push peer
+        peers.push peer
 
-    @peers = newPeers
+    @peers = peers
 
     @trigger 'remove', removedPeer
 
   find: (peerId) ->
-    foundPeer = undefined
+    peer = undefined
 
-    @peers.forEach (peer) ->
-      return foundPeer = peer if peer.peerId is peerId
+    @peers.forEach (p) ->
+      return peer = p if p.peerId is peerId
 
-    foundPeer
+    peer
 
   peersWithStreams: ->
     peersWithStreams = []

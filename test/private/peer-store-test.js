@@ -8,7 +8,12 @@
 
   describe('PeerStore', function() {
     beforeEach(function() {
-      return this.peerStore = new PeerStore;
+      this.URL = {
+        createObjectURL: function() {}
+      };
+      return this.peerStore = new PeerStore({
+        URL: this.URL
+      });
     });
     afterEach(function() {
       delete this.thePeer;
@@ -61,12 +66,17 @@
           peerId: this.peerId
         };
         this.peerStore.peers = [this.peer];
-        return this.stream = new Object;
+        this.stream = new Object;
+        this.streamUrl = 'abc123';
+        return sinon.collection.stub(this.URL, 'createObjectURL').withArgs(this.stream).returns(this.streamUrl);
       });
       it('attaches the stream to the peer of the id', function() {
         this.peerStore.addStream(this.peerId, this.stream);
-        expect(this.peer.stream).to.eq(this.stream);
-        return this.peerStore.peers = [];
+        return expect(this.peer.stream).to.eq(this.stream);
+      });
+      it('adds a streamUrl to peer', function() {
+        this.peerStore.addStream(this.peerId, this.stream);
+        return expect(this.peer.streamUrl).to.eq(this.streamUrl);
       });
       return it('triggers a streamAdded event', function() {
         var peer;
