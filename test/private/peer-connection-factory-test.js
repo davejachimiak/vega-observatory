@@ -14,7 +14,8 @@
         var peerConnectionConfig;
         this.vegaObservatory = {
           trigger: function() {},
-          sendCandidate: function() {}
+          sendCandidate: function() {},
+          addStream: function() {}
         };
         this.peerId = 'peerId';
         this.peer = {
@@ -45,14 +46,14 @@
         this.peerConnection.onicecandidate(event);
         return expect(sendCandidate).to.have.been.calledWith(event.candidate, this.peerId);
       });
-      return it('triggers a remoteStreamAdded event on the observatory when a stream is added', function() {
-        var event, trigger;
-        trigger = sinon.collection.stub(this.vegaObservatory, 'trigger');
+      return it('adds the stream to the observatory when a stream is added', function() {
+        var addStream, event;
+        addStream = sinon.collection.stub(this.vegaObservatory, 'addStream');
         event = {
           stream: 'an audio/video stream'
         };
         this.peerConnection.onaddstream(event);
-        return expect(trigger).to.have.been.calledWith('remoteStreamAdded', this.peer, event.stream);
+        return expect(addStream).to.have.been.calledWith(this.peer.peerId, event.stream);
       });
     });
   });

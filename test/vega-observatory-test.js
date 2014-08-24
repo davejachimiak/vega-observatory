@@ -156,6 +156,16 @@
         return expect(oN).to.have.been.calledWith('remove', f);
       });
     });
+    describe('#addStream', function() {
+      return it('delegates to the peerStore', function() {
+        var addStream, peerId, stream;
+        peerId = 'peerId';
+        stream = new Object;
+        addStream = sinon.collection.stub(this.peerStore, 'addStream');
+        this.vegaObservatory.addStream(peerId, stream);
+        return expect(addStream).to.have.been.calledWith(peerId, stream);
+      });
+    });
     return describe('vega client callbacks', function() {
       beforeEach(function() {
         this.peerConnection = {

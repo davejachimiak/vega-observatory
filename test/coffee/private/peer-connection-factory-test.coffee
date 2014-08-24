@@ -12,6 +12,7 @@ describe 'PeerConnectionFactory', ->
       @vegaObservatory =
         trigger: ->
         sendCandidate: ->
+        addStream: ->
       @peerId = 'peerId'
       @peer =
         peerId: @peerId
@@ -35,11 +36,10 @@ describe 'PeerConnectionFactory', ->
 
       expect(sendCandidate).to.have.been.calledWith event.candidate, @peerId
 
-    it 'triggers a remoteStreamAdded event on the observatory when a stream is added', ->
-      trigger = sinon.collection.stub @vegaObservatory, 'trigger'
+    it 'adds the stream to the observatory when a stream is added', ->
+      addStream = sinon.collection.stub @vegaObservatory, 'addStream'
       event   = { stream: 'an audio/video stream' }
 
       @peerConnection.onaddstream(event)
 
-      expect(trigger).to.have.been.calledWith 'remoteStreamAdded',
-        @peer, event.stream
+      expect(addStream).to.have.been.calledWith @peer.peerId, event.stream

@@ -19,7 +19,7 @@
         }
       };
       peerCandidate.onaddstream = function(event) {
-        return observatory.trigger('remoteStreamAdded', peer, event.stream);
+        return observatory.addStream(peerId, event.stream);
       };
       return peerCandidate;
     };

@@ -52,6 +52,9 @@ class VegaObservatory
 
   onPeerRemoved: (f) ->
     @peerStore.on 'remove', f
+    
+  addStream: (peerId, stream) ->
+    @peerStore.addStream(peerId, stream)
 
   _setClientCallbacks: ->
     @vegaClient.on 'callAccepted', (payload) =>

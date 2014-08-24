@@ -133,6 +133,16 @@ describe 'VegaObservatory', ->
 
       expect(oN).to.have.been.calledWith 'remove', f
 
+  describe '#addStream', ->
+    it 'delegates to the peerStore', ->
+      peerId    = 'peerId'
+      stream    = new Object
+      addStream = sinon.collection.stub @peerStore, 'addStream'
+
+      @vegaObservatory.addStream(peerId, stream)
+
+      expect(addStream).to.have.been.calledWith peerId, stream
+
   describe 'vega client callbacks', ->
     beforeEach ->
       @peerConnection =

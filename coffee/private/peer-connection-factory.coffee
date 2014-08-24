@@ -8,7 +8,7 @@ class PeerConnectionFactory
         observatory.sendCandidate(candidate, peerId)
 
     peerCandidate.onaddstream = (event) ->
-      observatory.trigger 'remoteStreamAdded', peer, event.stream
+      observatory.addStream peerId, event.stream
 
     peerCandidate
 

@@ -150,7 +150,7 @@ module.exports = require('./vega-client').VegaClient;
         }
       };
       peerCandidate.onaddstream = function(event) {
-        return observatory.trigger('remoteStreamAdded', peer, event.stream);
+        return observatory.addStream(peerId, event.stream);
       };
       return peerCandidate;
     };
@@ -398,6 +398,10 @@ module.exports = require('./vega-client').VegaClient;
 
     VegaObservatory.prototype.onPeerRemoved = function(f) {
       return this.peerStore.on('remove', f);
+    };
+
+    VegaObservatory.prototype.addStream = function(peerId, stream) {
+      return this.peerStore.addStream(peerId, stream);
     };
 
     VegaObservatory.prototype._setClientCallbacks = function() {

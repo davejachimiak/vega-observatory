@@ -65,6 +65,10 @@
       return this.peerStore.on('remove', f);
     };
 
+    VegaObservatory.prototype.addStream = function(peerId, stream) {
+      return this.peerStore.addStream(peerId, stream);
+    };
+
     VegaObservatory.prototype._setClientCallbacks = function() {
       this.vegaClient.on('callAccepted', (function(_this) {
         return function(payload) {
