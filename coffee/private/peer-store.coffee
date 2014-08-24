@@ -3,7 +3,7 @@ class PeerStore
   peers: []
 
   constructor: (@options) ->
-    @URL = @options.URL || global.URL
+    @URL = @options?.URL || global.URL
 
   add: (peer) ->
     @peers.push peer

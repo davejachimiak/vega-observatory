@@ -8,8 +8,9 @@
     PeerStore.prototype.peers = [];
 
     function PeerStore(options) {
+      var _ref;
       this.options = options;
-      this.URL = this.options.URL || global.URL;
+      this.URL = ((_ref = this.options) != null ? _ref.URL : void 0) || global.URL;
     }
 
     PeerStore.prototype.add = function(peer) {
