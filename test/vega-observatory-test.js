@@ -189,6 +189,9 @@
             }
           };
           this.peers = [this.peer1, this.peer2];
+          this.payload = {
+            peers: this.peers
+          };
           return this.peers.forEach((function(_this) {
             return function(peer) {
               return _this.createPeerConnection.withArgs(_this.vegaObservatory, peer, _this.peerConnectionConfig).returns(_this.peerConnection);
@@ -198,7 +201,7 @@
         it('saves references to all peers in the response', function() {
           var add;
           add = sinon.collection.spy(this.peerStore, 'add');
-          this.vegaClient.trigger('callAccepted', this.peers);
+          this.vegaClient.trigger('callAccepted', this.payload);
           return this.peers.forEach((function(_this) {
             return function(peer) {
               return expect(add).to.have.been.calledWith(peer);
@@ -211,7 +214,7 @@
           this.vegaObservatory.on('callAccepted', function(payload) {
             return object.peers = payload;
           });
-          this.vegaClient.trigger('callAccepted', this.peers);
+          this.vegaClient.trigger('callAccepted', this.payload);
           return expect(object.peers).to.eq(this.peers);
         });
       });

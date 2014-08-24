@@ -1,4 +1,4 @@
-VegaClient = require('vega-client')
+VegaClient = require('../vega-client')
 PeerConnectionFactory = require('./private/peer-connection-factory')
 SessionDescriptionCreator = require('./private/session-description-creator')
 PeerStore = require('./private/peer-store')
@@ -72,7 +72,9 @@ class VegaObservatory
     @vegaClient.on 'peerHangUp', (payload) =>
       @_handlePeerHangUp payload
 
-  _handleCallAccepted: (peers) ->
+  _handleCallAccepted: (payload) ->
+    peers = payload.peers
+
     peers.forEach (peer) =>
       @_addPeerToStore peer
 

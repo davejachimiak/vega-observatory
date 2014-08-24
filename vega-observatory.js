@@ -2,7 +2,7 @@
 (function() {
   var PeerConnectionFactory, PeerStore, SessionDescriptionCreator, VegaClient, VegaObservatory, WebRTCInterop;
 
-  VegaClient = require('vega-client');
+  VegaClient = require('../vega-client');
 
   PeerConnectionFactory = require('./private/peer-connection-factory');
 
@@ -97,7 +97,9 @@
       })(this));
     };
 
-    VegaObservatory.prototype._handleCallAccepted = function(peers) {
+    VegaObservatory.prototype._handleCallAccepted = function(payload) {
+      var peers;
+      peers = payload.peers;
       peers.forEach((function(_this) {
         return function(peer) {
           return _this._addPeerToStore(peer);

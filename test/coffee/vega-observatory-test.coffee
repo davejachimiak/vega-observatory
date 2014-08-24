@@ -155,6 +155,7 @@ describe 'VegaObservatory', ->
         @peer1 = { peerId: 'peerId1', badge: { name: 'Dave' } }
         @peer2 = { peerId: 'peerId2', badge: { name: 'Allie' } }
         @peers = [@peer1, @peer2]
+        @payload = { peers: @peers }
 
         @peers.forEach (peer) =>
           @createPeerConnection.withArgs(
@@ -166,7 +167,7 @@ describe 'VegaObservatory', ->
       it 'saves references to all peers in the response', ->
         add = sinon.collection.spy @peerStore, 'add'
 
-        @vegaClient.trigger('callAccepted', @peers)
+        @vegaClient.trigger('callAccepted', @payload)
 
         @peers.forEach (peer) =>
           expect(add).to.have.been.calledWith peer
@@ -177,7 +178,7 @@ describe 'VegaObservatory', ->
         @vegaObservatory.on 'callAccepted', (payload) ->
           object.peers = payload
 
-        @vegaClient.trigger('callAccepted', @peers)
+        @vegaClient.trigger('callAccepted', @payload)
 
         expect(object.peers).to.eq @peers
 
