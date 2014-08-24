@@ -47,6 +47,9 @@ class VegaObservatory
       this, peerId, peerConnection
     )
 
+  onStreamAdded: (f) ->
+    @peerStore.on 'streamAdded', f
+
   _setClientCallbacks: ->
     @vegaClient.on 'callAccepted', (payload) =>
       @_handleCallAccepted payload

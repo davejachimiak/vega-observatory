@@ -23,7 +23,8 @@
         add: function() {},
         addStream: function() {},
         remove: function() {},
-        find: function() {}
+        find: function() {},
+        on: function() {}
       };
       this.sessionDescriptionCreator = {
         forOffer: function() {},
@@ -135,6 +136,15 @@
         forAnswer = sinon.collection.stub(this.sessionDescriptionCreator, 'forAnswer');
         this.vegaObservatory.createAnswer(this.peerId);
         return expect(forAnswer).to.have.been.calledWith(this.vegaObservatory, this.peerId, this.peerConnection);
+      });
+    });
+    describe('#onStreamAdded', function() {
+      return it('sets a callback on the streamAdded event on the store', function() {
+        var f, oN;
+        oN = sinon.collection.stub(this.peerStore, 'on');
+        f = function() {};
+        this.vegaObservatory.onStreamAdded(f);
+        return expect(oN).to.have.been.calledWith('streamAdded', f);
       });
     });
     return describe('vega client callbacks', function() {

@@ -10,6 +10,7 @@ describe 'VegaObservatory', ->
       addStream: ->
       remove: ->
       find: ->
+      on: ->
     @sessionDescriptionCreator =
       forOffer: ->
       forAnswer: ->
@@ -113,6 +114,15 @@ describe 'VegaObservatory', ->
       @vegaObservatory.createAnswer(@peerId)
 
       expect(forAnswer).to.have.been.calledWith @vegaObservatory, @peerId, @peerConnection
+
+  describe '#onStreamAdded', ->
+    it 'sets a callback on the streamAdded event on the store', ->
+      oN = sinon.collection.stub @peerStore, 'on'
+      f = ->
+
+      @vegaObservatory.onStreamAdded(f)
+
+      expect(oN).to.have.been.calledWith 'streamAdded', f
 
   describe 'vega client callbacks', ->
     beforeEach ->

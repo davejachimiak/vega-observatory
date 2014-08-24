@@ -392,6 +392,10 @@ module.exports = require('./vega-client').VegaClient;
       return this.sessionDescriptionCreator.forAnswer(this, peerId, peerConnection);
     };
 
+    VegaObservatory.prototype.onStreamAdded = function(f) {
+      return this.peerStore.on('streamAdded', f);
+    };
+
     VegaObservatory.prototype._setClientCallbacks = function() {
       this.vegaClient.on('callAccepted', (function(_this) {
         return function(payload) {
