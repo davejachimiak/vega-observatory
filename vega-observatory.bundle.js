@@ -312,7 +312,7 @@ module.exports = require('./vega-observatory.js')
       return this.peerConnection.createOffer(this.successCallback(this.sendOffer), this.failureCallback);
     };
 
-    SessionDescriptionCreator.prototype.forAnswer = function(observatory, peerId, peerConnection) {
+    SessionDescriptionCreator.prototype.forAnswer = function() {
       return this.peerConnection.createAnswer(this.successCallback(this.sendAnswer), this.failureCallback);
     };
 
@@ -457,9 +457,7 @@ module.exports = require('./vega-observatory.js')
     };
 
     VegaObservatory.prototype._handleOffer = function(payload) {
-      var peer, peerConnection;
-      peer = new Object(payload);
-      peer.offer = void 0;
+      var peerConnection;
       peerConnection = this._addPeerToStore(payload);
       return this._handleSessionDescription(peerConnection, 'offer', payload);
     };
@@ -516,9 +514,11 @@ module.exports = require('./vega-observatory.js')
       var args, callbacks;
       args = Array.prototype.slice.call(arguments, 1);
       if (callbacks = this.callbacks[event]) {
-        return callbacks.forEach(function(callback) {
-          return callback.apply(this, args);
-        });
+        return callbacks.forEach((function(_this) {
+          return function(callback) {
+            return callback.apply(_this, args);
+          };
+        })(this));
       }
     };
 

@@ -82,8 +82,6 @@ class VegaObservatory
     @trigger 'callAccepted', peers
 
   _handleOffer: (payload) ->
-    peer       = new Object(payload)
-    peer.offer = undefined
     peerConnection = @_addPeerToStore payload
     @_handleSessionDescription(peerConnection, 'offer', payload)
 
@@ -137,7 +135,7 @@ class VegaObservatory
     args = Array.prototype.slice.call(arguments, 1)
 
     if callbacks = @callbacks[event]
-      callbacks.forEach (callback) ->
+      callbacks.forEach (callback) =>
         callback.apply(this, args)
 
 module.exports = VegaObservatory

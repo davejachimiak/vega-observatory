@@ -110,9 +110,7 @@
     };
 
     VegaObservatory.prototype._handleOffer = function(payload) {
-      var peer, peerConnection;
-      peer = new Object(payload);
-      peer.offer = void 0;
+      var peerConnection;
       peerConnection = this._addPeerToStore(payload);
       return this._handleSessionDescription(peerConnection, 'offer', payload);
     };
@@ -169,9 +167,11 @@
       var args, callbacks;
       args = Array.prototype.slice.call(arguments, 1);
       if (callbacks = this.callbacks[event]) {
-        return callbacks.forEach(function(callback) {
-          return callback.apply(this, args);
-        });
+        return callbacks.forEach((function(_this) {
+          return function(callback) {
+            return callback.apply(_this, args);
+          };
+        })(this));
       }
     };
 

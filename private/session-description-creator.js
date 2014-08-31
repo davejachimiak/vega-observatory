@@ -28,7 +28,7 @@
       return this.peerConnection.createOffer(this.successCallback(this.sendOffer), this.failureCallback);
     };
 
-    SessionDescriptionCreator.prototype.forAnswer = function(observatory, peerId, peerConnection) {
+    SessionDescriptionCreator.prototype.forAnswer = function() {
       return this.peerConnection.createAnswer(this.successCallback(this.sendAnswer), this.failureCallback);
     };
 

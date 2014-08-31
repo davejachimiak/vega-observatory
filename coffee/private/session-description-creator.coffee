@@ -12,7 +12,7 @@ class SessionDescriptionCreator
   forOffer: ->
     @peerConnection.createOffer @successCallback(@sendOffer), @failureCallback
 
-  forAnswer: (observatory, peerId, peerConnection) ->
+  forAnswer: ->
     @peerConnection.createAnswer @successCallback(@sendAnswer), @failureCallback
 
   successCallback: (onLocalDescriptionSuccess) ->
