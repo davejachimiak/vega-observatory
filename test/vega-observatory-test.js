@@ -57,6 +57,11 @@
       return expect(this.webRTCInteropEngaged).to.be["true"];
     });
     describe('#call', function() {
+      it('sets the local stream', function() {
+        var localStream;
+        this.vegaObservatory.call(localStream = new Object);
+        return expect(this.vegaObservatory.localStream).to.eq(localStream);
+      });
       return it('delegates to the vega client', function() {
         var call;
         call = sinon.collection.stub(this.vegaClient, 'call');

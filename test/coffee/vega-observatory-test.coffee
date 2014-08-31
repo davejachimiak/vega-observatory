@@ -36,6 +36,11 @@ describe 'VegaObservatory', ->
     expect(@webRTCInteropEngaged).to.be.true
 
   describe '#call', ->
+    it 'sets the local stream', ->
+      @vegaObservatory.call(localStream = new Object)
+
+      expect(@vegaObservatory.localStream).to.eq localStream
+
     it 'delegates to the vega client', ->
       call = sinon.collection.stub @vegaClient, 'call'
 

@@ -21,12 +21,12 @@
       this.webRTCInterop = this.options.webRTCInterop || WebRTCInterop;
       this.callbacks = {};
       this.peerStore = this.options.peerStore || new PeerStore;
-      this.localStream = this.options.localStream;
       this.webRTCInterop.infectGlobal();
       this._setClientCallbacks();
     }
 
-    VegaObservatory.prototype.call = function() {
+    VegaObservatory.prototype.call = function(localStream) {
+      this.localStream = localStream;
       return this.vegaClient.call();
     };
 
