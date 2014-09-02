@@ -179,6 +179,14 @@
         };
         return this.createPeerConnection = sinon.collection.stub(this.peerConnectionFactory, 'create');
       });
+      describe('on websocketError', function() {
+        return it('triggers a client websocket error', function() {
+          var error, trigger;
+          trigger = sinon.collection.stub(this.vegaObservatory, 'trigger');
+          this.vegaClient.trigger('websocketError', error = new Object);
+          return expect(trigger).to.have.been.calledWith('clientWebsocketError', error);
+        });
+      });
       describe('on callAccepted', function() {
         beforeEach(function() {
           this.peer1 = {

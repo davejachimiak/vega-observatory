@@ -58,6 +58,9 @@ class VegaObservatory
     @peerStore.addStream(peerId, stream)
 
   _setClientCallbacks: ->
+    @vegaClient.on 'websocketError', (error) =>
+      @trigger 'clientWebsocketError', error
+
     @vegaClient.on 'callAccepted', (payload) =>
       @_handleCallAccepted payload
 

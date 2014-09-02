@@ -155,6 +155,14 @@ describe 'VegaObservatory', ->
         poop: 'poop'
       @createPeerConnection = sinon.collection.stub(@peerConnectionFactory, 'create')
 
+    describe 'on websocketError', ->
+      it 'triggers a client websocket error', ->
+        trigger = sinon.collection.stub @vegaObservatory, 'trigger'
+
+        @vegaClient.trigger 'websocketError', error = new Object
+
+        expect(trigger).to.have.been.calledWith 'clientWebsocketError', error
+
     describe 'on callAccepted', ->
       beforeEach ->
         @peer1 = { peerId: 'peerId1', badge: { name: 'Dave' } }

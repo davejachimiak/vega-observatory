@@ -71,6 +71,11 @@
     };
 
     VegaObservatory.prototype._setClientCallbacks = function() {
+      this.vegaClient.on('websocketError', (function(_this) {
+        return function(error) {
+          return _this.trigger('clientWebsocketError', error);
+        };
+      })(this));
       this.vegaClient.on('callAccepted', (function(_this) {
         return function(payload) {
           return _this._handleCallAccepted(payload);
