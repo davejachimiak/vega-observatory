@@ -2,7 +2,7 @@
 (function() {
   var PeerConnectionFactory, PeerStore, SessionDescriptionCreator, VegaClient, VegaObservatory, WebRTCInterop;
 
-  VegaClient = require('../vega-client');
+  VegaClient = require('vega-client');
 
   PeerConnectionFactory = require('./private/peer-connection-factory');
 
@@ -10,7 +10,7 @@
 
   PeerStore = require('./private/peer-store');
 
-  WebRTCInterop = require('../webrtc-interop/webrtc-interop.js');
+  WebRTCInterop = require('webrtc-interop');
 
   VegaObservatory = (function() {
     function VegaObservatory(options) {

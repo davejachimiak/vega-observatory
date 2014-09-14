@@ -4,8 +4,8 @@
   "license": "MIT",
   "main":"index.js",
   "dependencies": {
-    "vega-client":"~0.1",
-    "underscore":"~1.6"
+    "vega-client":"~0.2",
+    "webrtc-interop":"~0.1"
   },
   "devDependencies": {
     "coffee-script":"1.7.1",

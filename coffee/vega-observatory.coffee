@@ -1,8 +1,8 @@
-VegaClient = require('../vega-client')
+VegaClient = require('vega-client')
 PeerConnectionFactory = require('./private/peer-connection-factory')
 SessionDescriptionCreator = require('./private/session-description-creator')
 PeerStore = require('./private/peer-store')
-WebRTCInterop = require('../webrtc-interop/webrtc-interop.js')
+WebRTCInterop = require('webrtc-interop')
 
 class VegaObservatory
   constructor: (@options) ->
